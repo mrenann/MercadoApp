@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  detekt-lint:
+  run-detekt:
     runs-on: ubuntu-latest
 
     steps:
