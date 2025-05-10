@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.material3)
 
     implementation(libs.voyager.navigator)
+    implementation(libs.composeIcons.evaIcons)
 
     //TESTS
     testImplementation(libs.junit)
