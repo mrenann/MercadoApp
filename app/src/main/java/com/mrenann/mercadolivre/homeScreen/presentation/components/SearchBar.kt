@@ -33,6 +33,7 @@ fun SearchBar(
     onQueryChange: (String) -> Unit,
     onSearch: (String) -> Unit
 ) {
+
     val keyboardController = LocalSoftwareKeyboardController.current
 
     OutlinedTextField(
@@ -59,7 +60,7 @@ fun SearchBar(
                 modifier = Modifier
                     .size(16.dp)
                     .clickable {
-                        if (query.length > 3) onSearch(query)
+                        if (query.length > SearchBar.MinQueryLength) onSearch(query)
                     },
                 imageVector = EvaIcons.Outline.Search,
                 contentDescription = "Search Icon"
@@ -78,7 +79,7 @@ fun SearchBar(
         ),
         keyboardActions = KeyboardActions(
             onDone = {
-                if (query.length > 3) onSearch(query)
+                if (query.length > SearchBar.MinQueryLength) onSearch(query)
                 keyboardController?.hide()
             }
         ),
@@ -89,4 +90,8 @@ fun SearchBar(
 @Composable
 fun SearchComponentPreview() {
     SearchBar(query = "", onQueryChange = {}, onSearch = {})
+}
+
+private object SearchBar {
+    const val MinQueryLength = 3
 }
