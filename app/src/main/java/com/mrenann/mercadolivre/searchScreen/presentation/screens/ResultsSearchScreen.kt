@@ -1,40 +1,58 @@
 package com.mrenann.mercadolivre.searchScreen.presentation.screens
 
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
-import com.mrenann.mercadolivre.core.data.remote.MockApiService
-import com.mrenann.mercadolivre.core.data.remote.response.SearchQueryResponse
-import com.mrenann.mercadolivre.searchScreen.presentation.components.ItemCard
-import kotlinx.coroutines.flow.first
-import org.koin.compose.koinInject
+import cafe.adriel.voyager.koin.koinScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import com.mrenann.mercadolivre.core.presentation.components.ErrorView
+import com.mrenann.mercadolivre.core.presentation.components.LoadingView
+import com.mrenann.mercadolivre.homeScreen.presentation.components.Header
+import com.mrenann.mercadolivre.searchScreen.presentation.screenModel.SearchScreenModel
 
 data class ResultsSearchScreen(
     val query: String,
 ) : Screen {
     @Composable
     override fun Content() {
-        val api = koinInject<MockApiService>()
-        var response by remember { mutableStateOf<SearchQueryResponse?>(null) }
+        val screenModel = koinScreenModel<SearchScreenModel>()
+        val state by screenModel.state.collectAsState()
+        val navigator = LocalNavigator.currentOrThrow
         LaunchedEffect(Unit) {
-            response = api.searchProducts(query).first()
+            screenModel.searchProducts(query)
         }
-        LazyColumn {
-            items(response?.results?.size ?: 0) { index ->
-                val item = response?.results?.get(index)
-                item?.let {
-                    ItemCard(
-                        item = item,
-                        modifier = Modifier,
+
+        Column {
+            Header(
+                query = query,
+                onBackClick = { navigator.pop() },
+                onSearchClick = {
+                    navigator.replace(
+                        SearchScreen()
                     )
+                }
+            )
+            when (state) {
+                is SearchScreenModel.State.Error -> {
+                    ErrorView(
+                        message = (state as SearchScreenModel.State.Error).message,
+                        buttonText = "Voltar pro ínicio",
+                        onButtonClick = { navigator.pop() },
+                    )
+                }
+
+                SearchScreenModel.State.Init -> Text("init")
+                SearchScreenModel.State.Loading -> LoadingView()
+                is SearchScreenModel.State.Result -> {
+                    Text("Result")
                 }
             }
         }
+
     }
 }
