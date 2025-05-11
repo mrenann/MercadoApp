@@ -1,6 +1,5 @@
 package com.mrenann.mercadolivre.core.data.remote.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Paging(
@@ -11,5 +10,5 @@ data class Paging(
     @SerializedName("primary_results")
     val primaryResults: Int? = 0,
     @SerializedName("total")
-    val total: Int? = 0
+    val total: Int? = 0,
 )

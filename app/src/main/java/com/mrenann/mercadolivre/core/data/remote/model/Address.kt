@@ -1,6 +1,5 @@
 package com.mrenann.mercadolivre.core.data.remote.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Address(
@@ -11,5 +10,5 @@ data class Address(
     @SerializedName("state_id")
     val stateId: String? = "",
     @SerializedName("state_name")
-    val stateName: String? = ""
+    val stateName: String? = "",
 )

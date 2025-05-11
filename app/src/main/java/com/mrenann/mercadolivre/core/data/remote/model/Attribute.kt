@@ -1,6 +1,5 @@
 package com.mrenann.mercadolivre.core.data.remote.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Attribute(
@@ -23,5 +22,5 @@ data class Attribute(
     @SerializedName("value_type")
     val valueType: String? = "",
     @SerializedName("values")
-    val values: List<AttributeValue>? = listOf()
+    val values: List<AttributeValue>? = listOf(),
 )

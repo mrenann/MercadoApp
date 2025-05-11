@@ -1,6 +1,5 @@
 package com.mrenann.mercadolivre.core.data.remote.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Shipping(
@@ -19,5 +18,5 @@ data class Shipping(
     @SerializedName("store_pick_up")
     val storePickUp: Boolean? = false,
     @SerializedName("tags")
-    val tags: List<String?>? = listOf()
+    val tags: List<String?>? = listOf(),
 )

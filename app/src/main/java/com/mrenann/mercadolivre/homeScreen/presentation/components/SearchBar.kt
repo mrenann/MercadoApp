@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -31,15 +30,16 @@ fun SearchBar(
     modifier: Modifier = Modifier,
     query: String,
     onQueryChange: (String) -> Unit,
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit,
 ) {
-
     val keyboardController = LocalSoftwareKeyboardController.current
 
     OutlinedTextField(
-        modifier = modifier
-            .height(48.dp)
-            .padding(0.dp),
+        enabled = false,
+        modifier =
+            modifier
+                .height(48.dp)
+                .padding(0.dp),
         value = query,
         maxLines = 1,
         onValueChange = onQueryChange,
@@ -48,41 +48,46 @@ fun SearchBar(
             Text(
                 fontSize = 14.sp,
                 lineHeight = 14.sp,
-                text = "Pesquisar no mercado livre"
+                text = "Pesquisar no mercado livre",
             )
         },
-        textStyle = TextStyle(
-            fontSize = 14.sp,
-            lineHeight = 14.sp
-        ),
+        textStyle =
+            TextStyle(
+                fontSize = 14.sp,
+                lineHeight = 14.sp,
+            ),
         leadingIcon = {
             Icon(
-                modifier = Modifier
-                    .size(16.dp)
-                    .clickable {
-                        if (query.length > SearchBar.MinQueryLength) onSearch(query)
-                    },
+                modifier =
+                    Modifier
+                        .size(16.dp)
+                        .clickable {
+                            if (query.length > SearchBar.MinQueryLength) onSearch(query)
+                        },
                 imageVector = EvaIcons.Outline.Search,
-                contentDescription = "Search Icon"
+                contentDescription = "Search Icon",
             )
         },
         shape = CircleShape,
-        colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = Color.White,
-            focusedBorderColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            focusedContainerColor = Color.White
-        ),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Done
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                if (query.length > SearchBar.MinQueryLength) onSearch(query)
-                keyboardController?.hide()
-            }
-        ),
+        colors =
+            OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = Color.White,
+                focusedBorderColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedContainerColor = Color.White,
+            ),
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onDone = {
+                    if (query.length > SearchBar.MinQueryLength) onSearch(query)
+                    keyboardController?.hide()
+                },
+            ),
     )
 }
 

@@ -1,6 +1,5 @@
 package com.mrenann.mercadolivre.core.data.remote.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class MetadataPrice(
@@ -27,5 +26,5 @@ data class MetadataPrice(
     @SerializedName("promotion_type")
     val promotionType: String? = "",
     @SerializedName("variation")
-    val variation: String? = ""
+    val variation: String? = "",
 )

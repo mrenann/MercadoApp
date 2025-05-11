@@ -5,8 +5,10 @@ import android.util.Log
 import java.io.IOException
 
 object JsonUtils {
-
-    fun getJsonDataFromAsset(context: Context, fileName: String): String? {
+    fun getJsonDataFromAsset(
+        context: Context,
+        fileName: String,
+    ): String? {
         return try {
             context.assets.open(fileName).bufferedReader().use { it.readText() }
         } catch (ioException: IOException) {

@@ -1,6 +1,5 @@
 package com.mrenann.mercadolivre.core.data.remote.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class AttributeValue(
@@ -11,5 +10,5 @@ data class AttributeValue(
     @SerializedName("source")
     val source: Long? = 0,
     @SerializedName("struct")
-    val struct: Struct? = Struct()
+    val struct: Struct? = Struct(),
 )

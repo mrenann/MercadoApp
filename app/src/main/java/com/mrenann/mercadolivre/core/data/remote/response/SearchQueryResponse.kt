@@ -1,6 +1,5 @@
 package com.mrenann.mercadolivre.core.data.remote.response
 
-
 import com.google.gson.annotations.SerializedName
 import com.mrenann.mercadolivre.core.data.remote.model.AvailableFilter
 import com.mrenann.mercadolivre.core.data.remote.model.AvailableSort
@@ -35,5 +34,5 @@ data class SearchQueryResponse(
     @SerializedName("sort")
     val sort: Sort? = Sort(),
     @SerializedName("user_context")
-    val userContext: Any? = Any()
+    val userContext: Any? = Any(),
 )

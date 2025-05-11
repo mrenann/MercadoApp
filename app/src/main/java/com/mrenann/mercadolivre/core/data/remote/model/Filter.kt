@@ -1,6 +1,5 @@
 package com.mrenann.mercadolivre.core.data.remote.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Filter(
@@ -11,5 +10,5 @@ data class Filter(
     @SerializedName("type")
     val type: String? = "",
     @SerializedName("values")
-    val values: List<FilterValue>? = listOf()
+    val values: List<FilterValue>? = listOf(),
 )

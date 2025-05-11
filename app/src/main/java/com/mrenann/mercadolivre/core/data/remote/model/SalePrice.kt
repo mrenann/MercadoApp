@@ -1,6 +1,5 @@
 package com.mrenann.mercadolivre.core.data.remote.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class SalePrice(
@@ -23,5 +22,5 @@ data class SalePrice(
     @SerializedName("regular_amount")
     val regularAmount: Double? = 0.0,
     @SerializedName("type")
-    val type: String? = ""
+    val type: String? = "",
 )

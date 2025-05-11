@@ -1,6 +1,5 @@
 package com.mrenann.mercadolivre.core.data.remote.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Result(
@@ -77,5 +76,5 @@ data class Result(
     @SerializedName("use_thumbnail_id")
     val useThumbnailId: Boolean? = false,
     @SerializedName("winner_item_id")
-    val winnerItemId: Any? = Any()
+    val winnerItemId: Any? = Any(),
 )
