@@ -82,7 +82,7 @@ fun ItemCard(
                         Text(
                             text = "Frete grátis",
                             fontSize = 13.sp,
-                            color = Color(0xFF00C853),
+                            color = Color.Green,
                             fontWeight = FontWeight.Medium
                         )
                     }
