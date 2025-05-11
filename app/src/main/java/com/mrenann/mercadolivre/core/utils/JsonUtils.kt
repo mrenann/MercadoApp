@@ -1,6 +1,7 @@
 package com.mrenann.mercadolivre.core.utils
 
 import android.content.Context
+import android.util.Log
 import java.io.IOException
 
 object JsonUtils {
@@ -9,7 +10,7 @@ object JsonUtils {
         return try {
             context.assets.open(fileName).bufferedReader().use { it.readText() }
         } catch (ioException: IOException) {
-            ioException.printStackTrace()
+            Log.e("JsonUtils", "Error reading JSON file: ${ioException.message}")
             null
         }
     }
