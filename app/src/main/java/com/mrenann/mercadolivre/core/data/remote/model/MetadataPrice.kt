@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class MetadataPrice(
     @SerializedName("campaign_discount_percentage")
-    val campaignDiscountPercentage: Int? = 0,
+    val campaignDiscountPercentage: Double? = 0.0,
     @SerializedName("campaign_end_date")
     val campaignEndDate: String? = "",
     @SerializedName("campaign_id")
