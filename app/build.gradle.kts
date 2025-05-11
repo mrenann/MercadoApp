@@ -65,6 +65,7 @@ dependencies {
 
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.koin)
+    implementation(libs.voyager.screenModel)
     implementation(libs.composeIcons.evaIcons)
     implementation(libs.code.gson)
     implementation(platform(libs.koin.bom))
