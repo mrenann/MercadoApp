@@ -11,33 +11,31 @@ import kotlinx.coroutines.flow.flow
 import java.io.IOException
 
 class MockApiServiceImpl(
-    private val context: Context
+    private val context: Context,
 ) : MockApiService {
-
     private val gson = Gson()
 
-    override fun searchProducts(query: String): Flow<SearchQueryResponse> = flow {
+    override fun searchProducts(query: String): Flow<SearchQueryResponse> =
+        flow {
+            try {
+                validateSearch(query)
+                val fileName = "search-MLA-$query.json"
+                Log.d("MockApiService", "Buscando arquivo: $fileName")
 
-        try {
-            validateSearch(query)
-            val fileName = "search-MLA-$query.json"
-            Log.d("MockApiService", "Buscando arquivo: $fileName")
+                val jsonFromFile =
+                    JsonUtils.getJsonDataFromAsset(context, fileName)
+                        ?: throw IOException("Arquivo não encontrado: $fileName")
 
-            val jsonFromFile = JsonUtils.getJsonDataFromAsset(context, fileName)
-                ?: throw IOException("Arquivo não encontrado: $fileName")
-
-            val response = gson.fromJson(jsonFromFile, SearchQueryResponse::class.java)
-            emit(response)
-
-        } catch (e: IOException) {
-            Log.e("MockApiService", "Erro ao ler arquivo JSON: ${e.message}")
-            throw e
-        } catch (e: JsonSyntaxException) {
-            Log.e("MockApiService", "Erro ao fazer parse do JSON: ${e.message}")
-            throw e
+                val response = gson.fromJson(jsonFromFile, SearchQueryResponse::class.java)
+                emit(response)
+            } catch (e: IOException) {
+                Log.e("MockApiService", "Erro ao ler arquivo JSON: ${e.message}")
+                throw e
+            } catch (e: JsonSyntaxException) {
+                Log.e("MockApiService", "Erro ao fazer parse do JSON: ${e.message}")
+                throw e
+            }
         }
-
-    }
 
     private fun validateSearch(query: String) {
         val availableTerms = listOf("arroz", "cafe", "camisa", "iphone", "zapatillas")

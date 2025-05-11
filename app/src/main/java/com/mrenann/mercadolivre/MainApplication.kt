@@ -14,12 +14,11 @@ class MainApplication : Application() {
             try {
                 androidContext(applicationContext)
                 modules(
-                    networkModule
+                    networkModule,
                 )
             } catch (e: KoinApplicationAlreadyStartedException) {
                 Log.e("Koin", "Koin already started", e)
             }
         }
-
     }
 }

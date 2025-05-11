@@ -21,12 +21,13 @@ class MainActivity : ComponentActivity() {
             MercadoLivreTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding),
                     ) {
                         Navigator(
-                            HomeScreen()
+                            HomeScreen(),
                         )
                     }
                 }

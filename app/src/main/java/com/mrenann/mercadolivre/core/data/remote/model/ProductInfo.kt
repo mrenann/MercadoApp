@@ -1,6 +1,5 @@
 package com.mrenann.mercadolivre.core.data.remote.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class ProductInfo(
@@ -9,5 +8,5 @@ data class ProductInfo(
     @SerializedName("score")
     val score: Int? = 0,
     @SerializedName("status")
-    val status: String? = ""
+    val status: String? = "",
 )

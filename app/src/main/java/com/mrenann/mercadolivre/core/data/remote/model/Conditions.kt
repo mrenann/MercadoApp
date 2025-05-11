@@ -1,6 +1,5 @@
 package com.mrenann.mercadolivre.core.data.remote.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Conditions(
@@ -11,5 +10,5 @@ data class Conditions(
     @SerializedName("end_time")
     val endTime: String? = "",
     @SerializedName("start_time")
-    val startTime: String? = ""
+    val startTime: String? = "",
 )

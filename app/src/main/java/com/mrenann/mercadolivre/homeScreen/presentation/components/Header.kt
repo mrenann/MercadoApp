@@ -1,6 +1,7 @@
 package com.mrenann.mercadolivre.homeScreen.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,56 +27,63 @@ import compose.icons.evaicons.outline.Pin
 import compose.icons.evaicons.outline.ShoppingCart
 
 @Composable
-fun Header() {
+fun Header(onSearchClick: () -> Unit) {
     var searchQuery by remember { mutableStateOf("") }
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                color = YellowAccent
-            )
-            .padding(all = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(
+                    color = YellowAccent,
+                )
+                .padding(all = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(
-                space = 12.dp,
-                alignment = Alignment.CenterHorizontally
-            ),
+            horizontalArrangement =
+                Arrangement.spacedBy(
+                    space = 12.dp,
+                    alignment = Alignment.CenterHorizontally,
+                ),
         ) {
             SearchBar(
-                modifier = Modifier.weight(1F),
+                modifier =
+                    Modifier
+                        .weight(1F)
+                        .clickable {
+                            onSearchClick()
+                        },
                 query = searchQuery,
                 onQueryChange = { searchQuery = it },
-                onSearch = {}
+                onSearch = {},
             )
             IconButton(onClick = { /* NONE */ }) {
                 Icon(
                     imageVector = EvaIcons.Outline.ShoppingCart,
-                    contentDescription = "Back"
+                    contentDescription = "Back",
                 )
             }
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(
-                space = 2.dp,
-                alignment = Alignment.CenterHorizontally
-            ),
+            horizontalArrangement =
+                Arrangement.spacedBy(
+                    space = 2.dp,
+                    alignment = Alignment.CenterHorizontally,
+                ),
         ) {
             Icon(
                 modifier = Modifier.size(16.dp),
                 imageVector = EvaIcons.Outline.Pin,
-                contentDescription = "Back"
+                contentDescription = "Back",
             )
             Text("Desafio Mobile")
             Icon(
                 imageVector = EvaIcons.Outline.ChevronRight,
-                contentDescription = "Back"
+                contentDescription = "Back",
             )
         }
-
     }
 }

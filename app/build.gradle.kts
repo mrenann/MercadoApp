@@ -32,7 +32,7 @@ android {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -50,7 +50,6 @@ android {
 
 ktlint {
     android = true
-
 }
 
 dependencies {
@@ -74,7 +73,7 @@ dependencies {
     implementation(libs.koin.compose)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
-    //TESTS
+    // TESTS
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.turbine)

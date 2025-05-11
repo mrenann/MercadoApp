@@ -28,28 +28,31 @@ import com.mrenann.mercadolivre.core.utils.forceHttps
 @Composable
 fun ItemCard(
     item: Result,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier =
+            modifier
+                .fillMaxWidth(),
         shape = RoundedCornerShape(0.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(4.dp),
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Row {
                 AsyncImage(
                     model = item.thumbnail?.forceHttps(),
                     contentDescription = item.title ?: "Sem Título",
-                    modifier = Modifier
-                        .size(150.dp),
-                    contentScale = ContentScale.Fit
+                    modifier =
+                        Modifier
+                            .size(150.dp),
+                    contentScale = ContentScale.Fit,
                 )
 
                 Column(
-                    modifier = Modifier
-                        .padding(start = 12.dp)
-                        .weight(1f)
+                    modifier =
+                        Modifier
+                            .padding(start = 12.dp)
+                            .weight(1f),
                 ) {
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -57,7 +60,7 @@ fun ItemCard(
                         text = item.title ?: "Sem Título",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
-                        maxLines = 2
+                        maxLines = 2,
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
@@ -67,7 +70,7 @@ fun ItemCard(
                             text = item.originalPrice.toString(),
                             fontSize = 13.sp,
                             color = Color.Gray,
-                            textDecoration = TextDecoration.LineThrough
+                            textDecoration = TextDecoration.LineThrough,
                         )
                     }
 
@@ -75,7 +78,7 @@ fun ItemCard(
                         text = item.price.toString(),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color.Black
+                        color = Color.Black,
                     )
 
                     if (item.shipping?.freeShipping == true) {
@@ -83,13 +86,11 @@ fun ItemCard(
                             text = "Frete grátis",
                             fontSize = 13.sp,
                             color = Color.Green,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.Medium,
                         )
                     }
                 }
             }
-
-
         }
     }
 }
@@ -98,14 +99,16 @@ fun ItemCard(
 @Composable
 fun ItemCardPreview() {
     ItemCard(
-        item = Result(
-            title = "Iphone 14 Pro Max",
-            originalPrice = null,
-            price = 250.0,
-            shipping = Shipping(
-                freeShipping = true
+        item =
+            Result(
+                title = "Iphone 14 Pro Max",
+                originalPrice = null,
+                price = 250.0,
+                shipping =
+                    Shipping(
+                        freeShipping = true,
+                    ),
+                thumbnail = "https://http2.mlstatic.com/D_805370-MLA43144907870_082020-I.jpg",
             ),
-            thumbnail = "https://http2.mlstatic.com/D_805370-MLA43144907870_082020-I.jpg"
-        )
     )
 }

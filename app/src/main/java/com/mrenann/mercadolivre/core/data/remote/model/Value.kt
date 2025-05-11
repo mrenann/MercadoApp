@@ -1,6 +1,5 @@
 package com.mrenann.mercadolivre.core.data.remote.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Value(
@@ -9,5 +8,5 @@ data class Value(
     @SerializedName("name")
     val name: String? = "",
     @SerializedName("results")
-    val results: Int? = 0
+    val results: Int? = 0,
 )
