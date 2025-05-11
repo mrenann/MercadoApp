@@ -15,6 +15,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mrenann.mercadolivre.core.presentation.components.ErrorView
 import com.mrenann.mercadolivre.core.presentation.components.LoadingView
+import com.mrenann.mercadolivre.detailsScreen.presentation.screen.DetailsScreen
 import com.mrenann.mercadolivre.homeScreen.presentation.components.Header
 import com.mrenann.mercadolivre.searchScreen.presentation.components.ItemCard
 import com.mrenann.mercadolivre.searchScreen.presentation.screenModel.SearchScreenModel
@@ -60,6 +61,14 @@ data class ResultsSearchScreen(
                             ItemCard(
                                 modifier = Modifier,
                                 item = item,
+                                onItemClick = {
+                                    navigator.push(
+                                        DetailsScreen(
+                                            item = item
+                                        )
+
+                                    )
+                                }
                             )
                         }
                     }
