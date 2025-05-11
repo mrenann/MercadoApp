@@ -12,7 +12,7 @@ class HomeScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         Header(
-            { navigator.push(SearchScreen()) },
+            onSearchClick = { navigator.push(SearchScreen()) }
         )
     }
 }
