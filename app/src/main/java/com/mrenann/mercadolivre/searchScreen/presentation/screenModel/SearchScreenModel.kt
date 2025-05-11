@@ -10,9 +10,8 @@ import kotlinx.coroutines.launch
 
 class SearchScreenModel(
     private val searchRepository: SearchRepository
-) : StateScreenModel<SearchScreenModel.State>(State.Init) {
+) : StateScreenModel<SearchScreenModel.State>(State.Loading) {
     sealed class State {
-        object Init : State()
         object Loading : State()
         data class Result(val state: SearchState) : State()
         data class Error(val message: String) : State()
@@ -27,7 +26,7 @@ class SearchScreenModel(
                     is Resource.Success -> State.Result(
                         SearchState(
                             query = query,
-                            items = emptyList()
+                            items = resource.data.results ?: emptyList()
                         )
                     )
 

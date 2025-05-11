@@ -1,5 +1,7 @@
 package com.mrenann.mercadolivre.searchScreen.presentation.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,12 +31,17 @@ import com.mrenann.mercadolivre.core.utils.forceHttps
 fun ItemCard(
     item: Result,
     modifier: Modifier = Modifier,
+    onItemClick: () -> Unit = {},
 ) {
     Card(
         modifier =
             modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .clickable { onItemClick() },
         shape = RoundedCornerShape(0.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White,
+        ),
         elevation = CardDefaults.cardElevation(4.dp),
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
@@ -44,7 +51,8 @@ fun ItemCard(
                     contentDescription = item.title ?: "Sem Título",
                     modifier =
                         Modifier
-                            .size(150.dp),
+                            .size(150.dp)
+                            .background(Color.LightGray),
                     contentScale = ContentScale.Fit,
                 )
 

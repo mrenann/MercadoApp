@@ -1,18 +1,23 @@
 package com.mrenann.mercadolivre.searchScreen.presentation.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mrenann.mercadolivre.core.presentation.components.ErrorView
 import com.mrenann.mercadolivre.core.presentation.components.LoadingView
+import com.mrenann.mercadolivre.detailsScreen.presentation.screen.DetailsScreen
 import com.mrenann.mercadolivre.homeScreen.presentation.components.Header
+import com.mrenann.mercadolivre.searchScreen.presentation.components.ItemCard
 import com.mrenann.mercadolivre.searchScreen.presentation.screenModel.SearchScreenModel
 
 data class ResultsSearchScreen(
@@ -46,10 +51,27 @@ data class ResultsSearchScreen(
                     )
                 }
 
-                SearchScreenModel.State.Init -> Text("init")
                 SearchScreenModel.State.Loading -> LoadingView()
                 is SearchScreenModel.State.Result -> {
-                    Text("Result")
+                    Log.i("asdasd", "${(state as SearchScreenModel.State.Result).state.items}")
+                    LazyColumn(
+                        modifier = Modifier.weight(1F)
+                    ) {
+                        items((state as SearchScreenModel.State.Result).state.items) { item ->
+                            ItemCard(
+                                modifier = Modifier,
+                                item = item,
+                                onItemClick = {
+                                    navigator.push(
+                                        DetailsScreen(
+                                            item = item
+                                        )
+
+                                    )
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
