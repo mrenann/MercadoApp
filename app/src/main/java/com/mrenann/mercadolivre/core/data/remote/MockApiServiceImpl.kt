@@ -35,9 +35,6 @@ class MockApiServiceImpl(
         } catch (e: JsonSyntaxException) {
             Log.e("MockApiService", "Erro ao fazer parse do JSON: ${e.message}")
             throw e
-        } catch (e: Exception) {
-            Log.e("MockApiService", "Erro inesperado: ${e.message}")
-            throw e
         }
 
     }
@@ -48,7 +45,7 @@ class MockApiServiceImpl(
         val normalizedQuery = query.trim().lowercase()
 
         if (normalizedQuery.isBlank()) {
-            throw IllegalArgumentException("Termo de busca não pode ser vazio")
+            require(normalizedQuery.isNotBlank()) { "Termo de busca não pode ser vazio" }
         }
 
         if (normalizedQuery !in availableTerms) {
