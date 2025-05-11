@@ -23,8 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.mrenann.mercadolivre.core.data.remote.model.Result
-import com.mrenann.mercadolivre.core.data.remote.model.Shipping
+import com.mrenann.mercadolivre.core.data.remote.model.search.Result
+import com.mrenann.mercadolivre.core.data.remote.model.search.Shipping
 import com.mrenann.mercadolivre.core.utils.forceHttps
 import com.mrenann.mercadolivre.core.utils.formatBalance
 

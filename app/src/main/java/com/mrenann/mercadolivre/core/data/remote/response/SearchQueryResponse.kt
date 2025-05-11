@@ -1,14 +1,14 @@
 package com.mrenann.mercadolivre.core.data.remote.response
 
 import com.google.gson.annotations.SerializedName
-import com.mrenann.mercadolivre.core.data.remote.model.AvailableFilter
-import com.mrenann.mercadolivre.core.data.remote.model.AvailableSort
-import com.mrenann.mercadolivre.core.data.remote.model.Filter
-import com.mrenann.mercadolivre.core.data.remote.model.Paging
-import com.mrenann.mercadolivre.core.data.remote.model.PdpTracking
-import com.mrenann.mercadolivre.core.data.remote.model.RankingIntrospection
-import com.mrenann.mercadolivre.core.data.remote.model.Result
-import com.mrenann.mercadolivre.core.data.remote.model.Sort
+import com.mrenann.mercadolivre.core.data.remote.model.search.AvailableFilter
+import com.mrenann.mercadolivre.core.data.remote.model.search.AvailableSort
+import com.mrenann.mercadolivre.core.data.remote.model.search.Filter
+import com.mrenann.mercadolivre.core.data.remote.model.search.Paging
+import com.mrenann.mercadolivre.core.data.remote.model.search.PdpTracking
+import com.mrenann.mercadolivre.core.data.remote.model.search.RankingIntrospection
+import com.mrenann.mercadolivre.core.data.remote.model.search.Result
+import com.mrenann.mercadolivre.core.data.remote.model.search.Sort
 
 data class SearchQueryResponse(
     @SerializedName("available_filters")

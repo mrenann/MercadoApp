@@ -11,7 +11,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import coil3.compose.AsyncImage
-import com.mrenann.mercadolivre.core.data.remote.model.Result
+import com.mrenann.mercadolivre.core.data.remote.model.search.Result
 import com.mrenann.mercadolivre.core.utils.forceHttps
 
 class DetailsScreen(val item: Result) : Screen {
