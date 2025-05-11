@@ -118,7 +118,7 @@ class MockApiServiceImplTest {
         }
 
     @Test
-    fun `should throw NoSuchElementException with correct message when searchProducts is called with unavailable query`() =
+    fun `should throw NoSuchElementException with correct message when searchProducts has unavailable query`() =
         runTest {
             val query = "produtoInexistente"
             try {
