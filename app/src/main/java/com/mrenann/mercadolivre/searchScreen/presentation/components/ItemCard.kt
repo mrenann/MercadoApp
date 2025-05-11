@@ -26,6 +26,7 @@ import coil3.compose.AsyncImage
 import com.mrenann.mercadolivre.core.data.remote.model.Result
 import com.mrenann.mercadolivre.core.data.remote.model.Shipping
 import com.mrenann.mercadolivre.core.utils.forceHttps
+import com.mrenann.mercadolivre.core.utils.formatBalance
 
 @Composable
 fun ItemCard(
@@ -75,7 +76,10 @@ fun ItemCard(
 
                     if (item.originalPrice != item.price && item.originalPrice != null) {
                         Text(
-                            text = item.originalPrice.toString(),
+
+                            text = item.originalPrice.formatBalance(
+                                currency = item.currencyId ?: "BRL",
+                            ),
                             fontSize = 13.sp,
                             color = Color.Gray,
                             textDecoration = TextDecoration.LineThrough,
@@ -83,7 +87,9 @@ fun ItemCard(
                     }
 
                     Text(
-                        text = item.price.toString(),
+                        text = (item.price ?: 0.0).formatBalance(
+                            currency = item.currencyId ?: "BRL",
+                        ),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Black,
