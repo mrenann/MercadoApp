@@ -11,24 +11,27 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import cafe.adriel.voyager.navigator.Navigator
-import com.mrenann.mercadolivre.searchScreen.presentation.screens.ResultsSearchScreen
 
 @Composable
 fun RowScope.SearchField(
-    query: String,
     focusRequester: FocusRequester,
-    navigator: Navigator
+    onSearch: (String) -> Unit,
+    onBack: () -> Unit,
 ) {
-    var query1 = query
+    var query by remember { mutableStateOf("") }
+
     TextField(
-        value = query1,
-        onValueChange = { query1 = it },
+        value = query,
+        onValueChange = { query = it },
         placeholder = { Text("Buscar...") },
         modifier =
             Modifier
@@ -37,12 +40,8 @@ fun RowScope.SearchField(
         singleLine = true,
         keyboardActions =
             KeyboardActions(onSearch = {
-                if (query1.isNotBlank()) {
-                    navigator.replace(
-                        ResultsSearchScreen(
-                            query1,
-                        ),
-                    )
+                if (query.isNotBlank()) {
+                    onSearch(query)
                 }
             }),
         keyboardOptions =
@@ -51,13 +50,13 @@ fun RowScope.SearchField(
                 imeAction = ImeAction.Search,
             ),
         leadingIcon = {
-            IconButton(onClick = { navigator.pop() }) {
+            IconButton(onClick = { onBack() }) {
                 Icon(Icons.Default.ArrowBack, contentDescription = "Voltar")
             }
         },
         trailingIcon = {
-            if (query1.isNotBlank()) {
-                IconButton(onClick = { query1 = "" }) {
+            if (query.isNotBlank()) {
+                IconButton(onClick = { query = "" }) {
                     Icon(Icons.Default.Close, contentDescription = "Limpar texto")
                 }
             }

@@ -11,10 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -27,7 +24,6 @@ import com.mrenann.mercadolivre.searchScreen.presentation.components.SearchField
 class SearchScreen : Screen {
     @Composable
     override fun Content() {
-        var query by remember { mutableStateOf("") }
         val focusRequester = remember { FocusRequester() }
         val navigator = LocalNavigator.currentOrThrow
         LaunchedEffect(Unit) {
@@ -41,7 +37,15 @@ class SearchScreen : Screen {
                     Modifier
                         .fillMaxWidth(),
             ) {
-                SearchField(query, focusRequester, navigator)
+                SearchField(
+                    focusRequester = focusRequester,
+                    onSearch = { query ->
+                        navigator.replace(
+                            ResultsSearchScreen(query)
+                        )
+                    },
+                    onBack = { navigator.pop() }
+                )
             }
 
             Spacer(Modifier.height(16.dp))
