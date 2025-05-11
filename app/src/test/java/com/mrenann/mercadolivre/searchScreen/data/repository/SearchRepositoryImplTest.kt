@@ -17,8 +17,8 @@ import org.junit.Test
 class SearchRepositoryImplTest {
 
     @Test
-    fun `repository should delegate to dataSource`() = runTest {
-        val fakeResponse = SearchQueryResponse(/* mock */)
+    fun `should repository delegate to dataSource`() = runTest {
+        val fakeResponse = SearchQueryResponse()
         val dataSource = mockk<SearchDataSource>()
         coEvery { dataSource.search("arroz") } returns flowOf(Resource.Success(fakeResponse))
 

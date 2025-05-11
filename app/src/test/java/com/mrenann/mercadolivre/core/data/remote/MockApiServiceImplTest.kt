@@ -52,45 +52,47 @@ class MockApiServiceImplTest {
     }
 
     @Test
-    fun `searchProducts com query válida 'arroz' deve emitir SearchQueryResponse`() = runTest {
-        val query =
-            "arroz"
-        val fileName = "search-MLA-$query.json"
+    fun `should emit SearchQueryResponse when searchProducts is called with valid query 'arroz'`() =
+        runTest {
+            val query =
+                "arroz"
+            val fileName = "search-MLA-$query.json"
 
-        val expectedResponseObject =
-            gson.fromJson(arrozString, SearchQueryResponse::class.java)
+            val expectedResponseObject =
+                gson.fromJson(arrozString, SearchQueryResponse::class.java)
 
-        every { JsonUtils.getJsonDataFromAsset(mockContext, fileName) } returns arrozString
+            every { JsonUtils.getJsonDataFromAsset(mockContext, fileName) } returns arrozString
 
-        val result = service.searchProducts(query).first()
+            val result = service.searchProducts(query).first()
 
-        assertNotNull(result)
+            assertNotNull(result)
 
-        val actualResponseObject =
-            gson.fromJson(arrozString, result::class.java)
-        if (actualResponseObject is SearchQueryResponse && expectedResponseObject is SearchQueryResponse) {
-            assertEquals(expectedResponseObject.query, actualResponseObject.query)
-            assertEquals(expectedResponseObject.results, actualResponseObject.results)
+            val actualResponseObject =
+                gson.fromJson(arrozString, result::class.java)
+            if (actualResponseObject is SearchQueryResponse && expectedResponseObject is SearchQueryResponse) {
+                assertEquals(expectedResponseObject.query, actualResponseObject.query)
+                assertEquals(expectedResponseObject.results, actualResponseObject.results)
+            }
+
+
+            verify { Log.d("MockApiService", "Buscando arquivo: $fileName") }
+            verify { JsonUtils.getJsonDataFromAsset(mockContext, fileName) }
         }
-
-
-        verify { Log.d("MockApiService", "Buscando arquivo: $fileName") }
-        verify { JsonUtils.getJsonDataFromAsset(mockContext, fileName) }
-    }
 
     @Test(expected = IllegalArgumentException::class)
-    fun `searchProducts com query vazia deve lançar IllegalArgumentException`() = runTest {
-        try {
-            service.searchProducts("").toList()
-        } catch (e: IllegalArgumentException) {
-            assertEquals("Termo de busca não pode ser vazio", e.message)
-            throw e
+    fun `should throw IllegalArgumentException when searchProducts is called with empty query`() =
+        runTest {
+            try {
+                service.searchProducts("").toList()
+            } catch (e: IllegalArgumentException) {
+                assertEquals("Termo de busca não pode ser vazio", e.message)
+                throw e
+            }
+            fail("Deveria ter lançado IllegalArgumentException")
         }
-        fail("Deveria ter lançado IllegalArgumentException")
-    }
 
     @Test
-    fun `searchProducts com query vazia deve lançar IllegalArgumentException com mensagem correta`() =
+    fun `should throw IllegalArgumentException with correct message when searchProducts is called with empty query`() =
         runTest {
             try {
                 service.searchProducts("").first()
@@ -102,20 +104,21 @@ class MockApiServiceImplTest {
 
 
     @Test(expected = NoSuchElementException::class)
-    fun `searchProducts com query não disponível deve lançar NoSuchElementException`() = runTest {
-        val query = "produtoInexistente"
-        try {
-            service.searchProducts(query).toList()
-        } catch (e: NoSuchElementException) {
-            assertEquals("Não encontramos resultados para: $query", e.message)
-            verify { Log.w("MockApiService", "Termo de busca não disponível: $query") }
-            throw e
+    fun `should throw NoSuchElementException when searchProducts is called with unavailable query`() =
+        runTest {
+            val query = "produtoInexistente"
+            try {
+                service.searchProducts(query).toList()
+            } catch (e: NoSuchElementException) {
+                assertEquals("Não encontramos resultados para: $query", e.message)
+                verify { Log.w("MockApiService", "Termo de busca não disponível: $query") }
+                throw e
+            }
+            fail("Deveria ter lançado NoSuchElementException")
         }
-        fail("Deveria ter lançado NoSuchElementException")
-    }
 
     @Test
-    fun `searchProducts com query não disponível deve lançar NoSuchElementException com mensagem correta`() =
+    fun `should throw NoSuchElementException with correct message when searchProducts is called with unavailable query`() =
         runTest {
             val query = "produtoInexistente"
             try {
@@ -128,7 +131,7 @@ class MockApiServiceImplTest {
         }
 
     @Test(expected = IOException::class)
-    fun `searchProducts com arquivo JSON não encontrado deve lançar IOException`() = runTest {
+    fun `should throw IOException when JSON file for query is not found`() = runTest {
         val query = "camisa"
         val fileName = "search-MLA-$query.json"
 
@@ -149,31 +152,8 @@ class MockApiServiceImplTest {
         fail("Deveria ter lançado IOException")
     }
 
-    @Test
-    fun `searchProducts com arquivo JSON não encontrado deve lançar IOException com mensagem correta`() =
-        runTest {
-            val query = "camisa"
-            val fileName = "search-MLA-$query.json"
-            val expectedErrorMessage = "Arquivo não encontrado: $fileName"
-
-            every { JsonUtils.getJsonDataFromAsset(mockContext, fileName) } returns null
-
-            try {
-                service.searchProducts(query).first()
-                fail("IOException esperada mas não lançada.")
-            } catch (e: IOException) {
-                assertEquals(expectedErrorMessage, e.message)
-                verify {
-                    Log.e(
-                        "MockApiService",
-                        "Erro ao ler arquivo JSON: $expectedErrorMessage"
-                    )
-                }
-            }
-        }
-
     @Test(expected = JsonSyntaxException::class)
-    fun `searchProducts com JSON malformado deve lançar JsonSyntaxException`() = runTest {
+    fun `should throw JsonSyntaxException when JSON file is malformed`() = runTest {
         val query = "iphone"
         val fileName = "search-MLA-$query.json"
         val malformedJson =
@@ -194,20 +174,19 @@ class MockApiServiceImplTest {
     }
 
     @Test
-    fun `searchProducts com JSON malformado deve lançar JsonSyntaxException e logar corretamente`() =
-        runTest {
-            val query = "zapatillas"
-            val fileName = "search-MLA-$query.json"
-            val malformedJson = """{"results": [1,2}"""
+    fun `should throw JsonSyntaxException and log error when JSON is malformed`() = runTest {
+        val query = "zapatillas"
+        val fileName = "search-MLA-$query.json"
+        val malformedJson = """{"results": [1,2}"""
 
-            every { JsonUtils.getJsonDataFromAsset(mockContext, fileName) } returns malformedJson
+        every { JsonUtils.getJsonDataFromAsset(mockContext, fileName) } returns malformedJson
 
-            try {
-                service.searchProducts(query).first()
-                fail("JsonSyntaxException esperada mas não lançada.")
-            } catch (e: JsonSyntaxException) {
-                assertNotNull(e.message)
-                verify { Log.e("MockApiService", "Erro ao fazer parse do JSON: ${e.message}") }
-            }
+        try {
+            service.searchProducts(query).first()
+            fail("JsonSyntaxException esperada mas não lançada.")
+        } catch (e: JsonSyntaxException) {
+            assertNotNull(e.message)
+            verify { Log.e("MockApiService", "Erro ao fazer parse do JSON: ${e.message}") }
         }
+    }
 }
