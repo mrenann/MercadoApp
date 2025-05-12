@@ -82,6 +82,7 @@ dependencies {
     implementation(libs.koin.compose)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.zoomable)
     // TESTS
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
