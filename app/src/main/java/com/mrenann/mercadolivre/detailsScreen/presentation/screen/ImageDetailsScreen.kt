@@ -16,6 +16,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,7 +37,7 @@ import com.mrenann.mercadolivre.core.utils.forceHttps
 import compose.icons.EvaIcons
 import compose.icons.evaicons.Outline
 import compose.icons.evaicons.outline.ChevronLeft
-import net.engawapg.lib.zoomable.rememberZoomState
+import net.engawapg.lib.zoomable.ZoomState
 import net.engawapg.lib.zoomable.zoomable
 
 data class ImageDetailsScreen(val images: List<Picture>, val initialPage: Int = 0) : Screen {
@@ -45,7 +49,14 @@ data class ImageDetailsScreen(val images: List<Picture>, val initialPage: Int = 
             pageCount = { images.size }
         )
         val currentPage = pagerState.currentPage
-
+        var zoomStates by rememberSaveable(images.map { it.url }) {
+            mutableStateOf(images.map {
+                ZoomState(
+                    initialScale = 1f,
+                    maxScale = 5f
+                )
+            })
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -71,7 +82,7 @@ data class ImageDetailsScreen(val images: List<Picture>, val initialPage: Int = 
                         contentDescription = "produto imagem",
                         modifier = Modifier
                             .fillMaxSize()
-                            .zoomable(rememberZoomState()),
+                            .zoomable(zoomState = zoomStates[index]),
                         contentScale = ContentScale.Fit,
                     )
 
