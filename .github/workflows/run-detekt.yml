@@ -37,8 +37,9 @@ jobs:
 
       - name: Run detekt
         run: ./gradlew detekt
-        
-      - name: Upload SARIF report
-        uses: github/codeql-action/upload-sarif@v2
+
+      - name: Upload SARIF to GitHub using the upload-sarif action
+        uses: github/codeql-action/upload-sarif@v3
+        if: success() || failure()
         with:
           sarif_file: build/reports/detekt/detekt.sarif
