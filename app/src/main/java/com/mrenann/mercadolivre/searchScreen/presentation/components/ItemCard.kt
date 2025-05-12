@@ -23,14 +23,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.mrenann.mercadolivre.core.data.remote.model.search.Result
-import com.mrenann.mercadolivre.core.data.remote.model.search.Shipping
-import com.mrenann.mercadolivre.core.utils.forceHttps
+import com.mrenann.mercadolivre.core.domain.model.SearchResult
 import com.mrenann.mercadolivre.core.utils.formatBalance
 
 @Composable
 fun ItemCard(
-    item: Result,
+    item: SearchResult,
     modifier: Modifier = Modifier,
     onItemClick: () -> Unit = {},
 ) {
@@ -48,7 +46,7 @@ fun ItemCard(
         Column(modifier = Modifier.padding(12.dp)) {
             Row {
                 AsyncImage(
-                    model = item.thumbnail?.forceHttps(),
+                    model = item.thumbnail,
                     contentDescription = item.title ?: "Sem Título",
                     modifier =
                         Modifier
@@ -95,7 +93,7 @@ fun ItemCard(
                         color = Color.Black,
                     )
 
-                    if (item.shipping?.freeShipping == true) {
+                    if (item.freeShipping == true) {
                         Text(
                             text = "Frete grátis",
                             fontSize = 13.sp,
@@ -114,15 +112,14 @@ fun ItemCard(
 fun ItemCardPreview() {
     ItemCard(
         item =
-            Result(
+            SearchResult(
+                id = "aa",
+                thumbnail = "https://http2.mlstatic.com/D_805370-MLA43144907870_082020-I.jpg",
                 title = "Iphone 14 Pro Max",
                 originalPrice = null,
                 price = 250.0,
-                shipping =
-                    Shipping(
-                        freeShipping = true,
-                    ),
-                thumbnail = "https://http2.mlstatic.com/D_805370-MLA43144907870_082020-I.jpg",
+                freeShipping = true,
+                currencyId = "BRL",
             ),
     )
 }

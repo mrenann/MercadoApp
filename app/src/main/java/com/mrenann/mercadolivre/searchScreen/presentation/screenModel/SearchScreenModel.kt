@@ -26,7 +26,7 @@ class SearchScreenModel(
                     is Resource.Success -> State.Result(
                         SearchState(
                             query = query,
-                            items = resource.data.results ?: emptyList()
+                            items = resource.data
                         )
                     )
 
