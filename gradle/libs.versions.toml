@@ -23,6 +23,7 @@ coil = "3.1.0"
 coreTesting = "2.2.0"
 testCore = "1.6.1"
 kover = "0.9.1"
+zoomable = "2.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -61,6 +62,7 @@ koin-compose = { group = "io.insert-koin", name = "koin-compose" }
 
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 
 androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
 androidx-core = { module = "androidx.test:core", version.ref = "testCore" }

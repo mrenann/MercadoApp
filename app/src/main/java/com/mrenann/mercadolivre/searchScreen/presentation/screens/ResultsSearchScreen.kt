@@ -1,6 +1,5 @@
 package com.mrenann.mercadolivre.searchScreen.presentation.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -53,7 +52,6 @@ data class ResultsSearchScreen(
 
                 SearchScreenModel.State.Loading -> LoadingView()
                 is SearchScreenModel.State.Result -> {
-                    Log.i("asdasd", "${(state as SearchScreenModel.State.Result).state.items}")
                     LazyColumn(
                         modifier = Modifier.weight(1F)
                     ) {
