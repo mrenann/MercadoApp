@@ -11,7 +11,7 @@ plugins {
 }
 
 val reportMerge by tasks.registering(io.gitlab.arturbosch.detekt.report.ReportMergeTask::class) {
-    output.set(rootProject.layout.buildDirectory.file("reports/detekt/merge.xml"))
+    output.set(rootProject.layout.buildDirectory.file("reports/detekt/merge.sarif"))
 }
 
 allprojects {
@@ -19,13 +19,13 @@ allprojects {
         toolVersion = libs.versions.detekt.get()
         config.setFrom(file("$rootDir/config/detekt/detekt.yml"))
     }
+    tasks.withType<Detekt>().configureEach { reports { sarif.required.set(true) } }
 }
 
-tasks.withType<Detekt>().configureEach { reports { sarif.required.set(true) } }
 reportMerge {
     input.from(
         tasks.withType<Detekt>()
-            .map { it.reports.xml.outputLocation })
+            .map { it.reports.sarif.outputLocation })
 }
 
 android {
