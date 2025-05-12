@@ -1,4 +1,3 @@
-import io.gitlab.arturbosch.detekt.Detekt
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
@@ -10,25 +9,11 @@ plugins {
     alias(libs.plugins.kotlinx.kover)
 }
 
-val mergeSarif by tasks.registering(io.gitlab.arturbosch.detekt.report.ReportMergeTask::class) {
-    output.set(rootProject.layout.buildDirectory.file("reports/detekt/merge.sarif"))
-    input.from(
-        tasks.withType<Detekt>().map { it.reports.sarif.outputLocation }
-    )
-}
-
 allprojects {
     detekt {
         toolVersion = libs.versions.detekt.get()
         config.setFrom(file("$rootDir/config/detekt/detekt.yml"))
     }
-    tasks.withType<Detekt>().configureEach { reports { sarif.required.set(true) } }
-}
-
-mergeSarif {
-    input.from(
-        tasks.withType<Detekt>()
-            .map { it.reports.sarif.outputLocation })
 }
 
 android {
