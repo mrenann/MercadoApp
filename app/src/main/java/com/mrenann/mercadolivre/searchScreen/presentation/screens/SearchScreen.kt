@@ -21,7 +21,9 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mrenann.mercadolivre.searchScreen.presentation.components.SearchField
 
-class SearchScreen : Screen {
+data class SearchScreen(
+    val initialQuery: String = ""
+) : Screen {
     @Composable
     override fun Content() {
         val focusRequester = remember { FocusRequester() }
@@ -38,6 +40,7 @@ class SearchScreen : Screen {
                         .fillMaxWidth(),
             ) {
                 SearchField(
+                    initialQuery = initialQuery,
                     focusRequester = focusRequester,
                     onSearch = { query ->
                         navigator.replace(

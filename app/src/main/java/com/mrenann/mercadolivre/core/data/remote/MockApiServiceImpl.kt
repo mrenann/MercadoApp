@@ -22,7 +22,8 @@ class MockApiServiceImpl(
         flow {
             try {
                 validateSearch(query)
-                val fileName = "search-MLA-$query.json"
+                val queryFormatted = query.trim().lowercase()
+                val fileName = "search-MLA-$queryFormatted.json"
                 Log.d("MockApiService", "Buscando arquivo: $fileName")
 
                 val jsonFromFile =
