@@ -36,12 +36,12 @@ import compose.icons.evaicons.outline.ChevronLeft
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
 
-data class ImageDetailsScreen(val images: List<Picture>) : Screen {
+data class ImageDetailsScreen(val images: List<Picture>, val initialPage: Int = 0) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val pagerState = rememberPagerState(
-            initialPage = 0,
+            initialPage = initialPage,
             pageCount = { images.size }
         )
         val currentPage = pagerState.currentPage
@@ -56,7 +56,6 @@ data class ImageDetailsScreen(val images: List<Picture>) : Screen {
                     .fillMaxSize()
                     .background(Color.Black),
             ) {
-
 
                 HorizontalPager(
                     modifier = Modifier.fillMaxSize(),
@@ -123,7 +122,6 @@ data class ImageDetailsScreen(val images: List<Picture>) : Screen {
             }
 
         }
-
 
     }
 }
