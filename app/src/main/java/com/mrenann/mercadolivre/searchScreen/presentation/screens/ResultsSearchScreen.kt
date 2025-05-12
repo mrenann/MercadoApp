@@ -37,7 +37,9 @@ data class ResultsSearchScreen(
                 onBackClick = { navigator.pop() },
                 onSearchClick = {
                     navigator.replace(
-                        SearchScreen()
+                        SearchScreen(
+                            initialQuery = query
+                        )
                     )
                 }
             )

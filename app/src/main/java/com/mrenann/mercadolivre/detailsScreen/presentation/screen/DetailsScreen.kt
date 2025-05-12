@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -67,7 +66,7 @@ class DetailsScreen(val item: Result) : Screen {
                     Icon(
                         imageVector = EvaIcons.Outline.ChevronLeft,
                         contentDescription = "Botão de voltar",
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = Color.Black
                     )
                 }
             }
