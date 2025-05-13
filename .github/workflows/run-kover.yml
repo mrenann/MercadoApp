@@ -8,6 +8,7 @@ permissions:
   contents: read
   pull-requests: write
   issues: write
+  checks: write
 
 jobs:
   kover-coverage:
@@ -23,16 +24,28 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Generate Kover report
-        run: ./gradlew koverXmlReport
+      - name: Run tests with Kover
+        run: ./gradlew koverXmlReport --info
+
+      - name: Debug Kover report
+        run: |
+          ls -la build/reports/kover/
+          if [ -f "build/reports/kover/report.xml" ]; then
+            echo "Report exists, checking content..."
+            head -n 20 build/reports/kover/report.xml
+          else
+            echo "❌ Kover report not generated!"
+            exit 1
+          fi
 
       - name: Upload Kover report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: kover-report
           path: build/reports/kover/report.xml
 
-      - name: Check coverage and post to PR
+      - name: Post coverage to PR
         uses: mi-kas/kover-report@v1
         with:
           path: build/reports/kover/report.xml
