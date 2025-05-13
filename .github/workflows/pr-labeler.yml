@@ -2,7 +2,7 @@ name: PR Auto Assign and Label
 
 on:
   pull_request:
-    types: [ opened, edited ]
+    types: [ opened, reopened, edited ]
 
 permissions:
   pull-requests: write
