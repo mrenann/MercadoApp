@@ -1,0 +1,3 @@
+package com.mrenann.mercadolivre.detailsScreen.presentation.screenModel
+
+class DetailsScreenModelTest
