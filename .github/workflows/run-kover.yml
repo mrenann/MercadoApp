@@ -22,7 +22,7 @@ jobs:
         run: ./gradlew koverXmlReport
 
       - name: Upload Kover report as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: kover-report
           path: build/reports/kover/report.xml
