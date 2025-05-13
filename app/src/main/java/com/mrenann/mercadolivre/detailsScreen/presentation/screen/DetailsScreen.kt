@@ -22,7 +22,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.mrenann.mercadolivre.core.data.remote.model.search.Result
+import com.mrenann.mercadolivre.core.domain.model.SearchResult
 import com.mrenann.mercadolivre.detailsScreen.presentation.components.LoadingDetails
 import com.mrenann.mercadolivre.detailsScreen.presentation.components.ProductDetailsContent
 import com.mrenann.mercadolivre.detailsScreen.presentation.screenModel.DetailsScreenModel
@@ -31,7 +31,7 @@ import compose.icons.EvaIcons
 import compose.icons.evaicons.Outline
 import compose.icons.evaicons.outline.ChevronLeft
 
-class DetailsScreen(val item: Result) : Screen {
+class DetailsScreen(val item: SearchResult) : Screen {
     @Composable
     override fun Content() {
         val screenModel = koinScreenModel<DetailsScreenModel>()

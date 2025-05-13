@@ -2,6 +2,7 @@ package com.mrenann.mercadolivre.searchScreen.data.source
 
 import com.mrenann.mercadolivre.core.data.remote.MockApiService
 import com.mrenann.mercadolivre.core.data.remote.response.SearchQueryResponse
+
 import com.mrenann.mercadolivre.core.utils.Resource
 import com.mrenann.mercadolivre.core.utils.logError
 import com.mrenann.mercadolivre.core.utils.mapExceptionToErrorMessage
