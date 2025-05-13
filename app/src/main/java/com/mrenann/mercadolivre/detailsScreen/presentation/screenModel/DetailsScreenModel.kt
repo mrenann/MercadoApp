@@ -3,6 +3,7 @@ package com.mrenann.mercadolivre.detailsScreen.presentation.screenModel
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.mrenann.mercadolivre.core.domain.model.DetailedProduct
+import com.mrenann.mercadolivre.core.utils.Resource
 import com.mrenann.mercadolivre.detailsScreen.domain.usecase.GetProductUseCase
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -20,11 +21,14 @@ class DetailsScreenModel(
         mutableState.value = State.Loading
 
         screenModelScope.launch {
-            getProductUseCase.invoke(id).collectLatest { product ->
-                mutableState.value = State.Result(product)
+            getProductUseCase.invoke(id).collectLatest { resource ->
+                mutableState.value = when (resource) {
+                    is Resource.Loading -> State.Loading
+                    is Resource.Success -> State.Result(resource.data)
+                    is Resource.Error -> State.Error(resource.message)
+                }
             }
         }
     }
-
-
 }
+

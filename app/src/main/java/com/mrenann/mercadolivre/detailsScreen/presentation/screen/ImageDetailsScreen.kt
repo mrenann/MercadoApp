@@ -32,15 +32,13 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.mrenann.mercadolivre.core.data.remote.model.details.Picture
-import com.mrenann.mercadolivre.core.utils.forceHttps
 import compose.icons.EvaIcons
 import compose.icons.evaicons.Outline
 import compose.icons.evaicons.outline.ChevronLeft
 import net.engawapg.lib.zoomable.ZoomState
 import net.engawapg.lib.zoomable.zoomable
 
-data class ImageDetailsScreen(val images: List<Picture>, val initialPage: Int = 0) : Screen {
+data class ImageDetailsScreen(val images: List<String>, val initialPage: Int = 0) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -49,7 +47,7 @@ data class ImageDetailsScreen(val images: List<Picture>, val initialPage: Int = 
             pageCount = { images.size }
         )
         val currentPage = pagerState.currentPage
-        var zoomStates by rememberSaveable(images.map { it.url }) {
+        var zoomStates by rememberSaveable(images) {
             mutableStateOf(images.map {
                 ZoomState(
                     initialScale = 1f,
@@ -71,12 +69,12 @@ data class ImageDetailsScreen(val images: List<Picture>, val initialPage: Int = 
                 HorizontalPager(
                     modifier = Modifier.fillMaxSize(),
                     state = pagerState,
-                    key = { images[it].url ?: "" }
+                    key = { images[it] }
                 ) { index ->
 
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data(images[index].url?.forceHttps())
+                            .data(images[index])
                             .crossfade(true)
                             .build(),
                         contentDescription = "produto imagem",
