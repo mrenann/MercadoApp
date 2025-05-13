@@ -57,24 +57,20 @@ jobs:
               -fail-on-error=false \
               < $GITHUB_WORKSPACE/reports/detekt.xml
 
-            if grep -q "<error " $GITHUB_WORKSPACE/reports/detekt.xml; then
-              echo "⚠️ Detekt encontrou problemas (ver comentários no PR)"
-            else
-              echo "✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅"
-              echo "✅✅✅ Detekt passou sem erros! ✅✅✅"
-              echo "✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅"
-              echo "## ✅ Detekt Analysis Passed" >> $GITHUB_STEP_SUMMARY
-              echo "### 🎉 Nenhum problema encontrado!" >> $GITHUB_STEP_SUMMARY
-              echo "Todas as regras de qualidade foram verificadas com sucesso!" >> $GITHUB_STEP_SUMMARY
+            if ! grep -q "<error " "$GITHUB_WORKSPACE/reports/detekt.xml"; then
+              echo "✅✅✅ Detekt passou sem erros! ✅✅✅" > success-message.txt
+              gh pr comment $GITHUB_REF_NAME --body "$(cat success-message.txt)" || echo "Não foi possível postar comentário"
+          
+              echo "## ✅ Detekt Passed" >> $GITHUB_STEP_SUMMARY
+              echo "All checks passed successfully!" >> $GITHUB_STEP_SUMMARY
             fi
           else
-            echo "⚠️ Relatório não encontrado em: $GITHUB_WORKSPACE/reports/detekt.xml"
-            find $GITHUB_WORKSPACE -name "detekt.xml" || echo "Nenhum relatório encontrado"
+            echo "⚠️ Relatório não encontrado" >&2
           fi
           
           if [ -n "${gradlew_exit_code:-}" ]; then
-            echo "❌❌❌ Detekt encontrou problemas críticos ❌❌❌"
             exit $gradlew_exit_code
           fi
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
