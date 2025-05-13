@@ -7,6 +7,7 @@ import com.mrenann.mercadolivre.core.data.remote.response.ItemCategoryResponse
 import com.mrenann.mercadolivre.core.data.remote.response.ItemDescriptionResponse
 import com.mrenann.mercadolivre.core.data.remote.response.ItemDetailsResponse
 import com.mrenann.mercadolivre.core.utils.Resource
+import com.mrenann.mercadolivre.detailsScreen.domain.source.DetailsDataSource
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -23,7 +24,7 @@ import java.io.IOException
 class DetailsDataSourceImplTest {
 
     private val service: MockApiService = mockk()
-    private lateinit var dataSource: DetailsDataSourceImpl
+    private lateinit var dataSource: DetailsDataSource
 
     @Before
     fun setup() {
