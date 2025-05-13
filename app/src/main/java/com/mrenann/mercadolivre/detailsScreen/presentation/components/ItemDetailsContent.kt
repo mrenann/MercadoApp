@@ -2,8 +2,6 @@ package com.mrenann.mercadolivre.detailsScreen.presentation.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,11 +18,8 @@ fun ItemDetailsContent(
     item: DetailedProduct,
     onImageClick: (List<String>, Int) -> Unit,
     fallback: SearchResult,
-    scrollState: LazyListState
 ) {
-    LazyColumn(
-        state = scrollState,
-    ) {
+    Column {
         val product = item.item
         val pictures = product?.pictures
             ?: if (fallback.thumbnail != null) listOf(fallback.thumbnail) else emptyList()
@@ -35,41 +30,40 @@ fun ItemDetailsContent(
             ?: fallback.price ?: 0.0
         val currency = product?.currencyId ?: fallback.currencyId ?: "BRL"
 
-        item {
-            Column(
-                modifier = Modifier
-                    .padding(all = 12.dp)
-            ) {
-                product?.condition?.let {
-                    Text(
-                        text = "${product.condition.toCondition()} | +${Ten}mil vendidos",
-                        color = Color.Gray,
-                        fontSize = 12.sp
-                    )
-                }
-                Text(product?.title ?: fallback.title ?: "Sem título")
+        Column(
+            modifier = Modifier
+                .padding(all = 12.dp)
+        ) {
+            product?.condition?.let {
+                Text(
+                    text = "${product.condition.toCondition()} | +${Ten}mil vendidos",
+                    color = Color.Gray,
+                    fontSize = 12.sp
+                )
             }
-
-            ImagesPager(
-                imagesSize,
-                pictures,
-                onImageClick
-            )
-
-            PriceDisplay(
-                modifier = Modifier.padding(horizontal = 12.dp),
-                originalPrice = originalPrice,
-                currentPrice = currentPrice,
-                currency = currency,
-            )
-
-            product?.let {
-                DetailsContent(product)
-            }
-
-            DescriptionContent(
-                description = item.description ?: "Sem descrição disponível"
-            )
+            Text(product?.title ?: fallback.title ?: "Sem título")
         }
+
+        ImagesPager(
+            imagesSize,
+            pictures,
+            onImageClick
+        )
+
+        PriceDisplay(
+            modifier = Modifier.padding(horizontal = 12.dp),
+            originalPrice = originalPrice,
+            currentPrice = currentPrice,
+            currency = currency,
+        )
+
+        product?.let {
+            DetailsContent(product)
+        }
+
+        DescriptionContent(
+            description = item.description ?: "Sem descrição disponível"
+        )
     }
+
 }

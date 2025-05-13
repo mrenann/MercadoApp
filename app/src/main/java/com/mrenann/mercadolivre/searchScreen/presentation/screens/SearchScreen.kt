@@ -11,11 +11,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -28,7 +31,10 @@ data class SearchScreen(
     override fun Content() {
         val focusRequester = remember { FocusRequester() }
         val navigator = LocalNavigator.currentOrThrow
-        LaunchedEffect(Unit) {
+        val lifecycleOwner = LocalLifecycleOwner.current
+        val currentQuery = rememberSaveable { mutableStateOf(initialQuery) }
+
+        LaunchedEffect(lifecycleOwner) {
             focusRequester.requestFocus()
         }
 
@@ -40,12 +46,16 @@ data class SearchScreen(
                         .fillMaxWidth(),
             ) {
                 SearchField(
-                    initialQuery = initialQuery,
+                    initialQuery = currentQuery.value,
                     focusRequester = focusRequester,
                     onSearch = { query ->
+                        currentQuery.value = query
                         navigator.replace(
                             ResultsSearchScreen(query)
                         )
+                    },
+                    onQueryChanged = { query ->
+                        currentQuery.value = query
                     },
                     onBack = { navigator.pop() }
                 )
