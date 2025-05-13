@@ -1,3 +1,4 @@
+import io.gitlab.arturbosch.detekt.Detekt
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
@@ -13,6 +14,13 @@ allprojects {
     detekt {
         toolVersion = libs.versions.detekt.get()
         config.setFrom(file("$rootDir/config/detekt/detekt.yml"))
+    }
+    tasks.withType<Detekt>().configureEach {
+        reports {
+            xml.required.set(true)
+            html.required.set(false)
+            txt.required.set(false)
+        }
     }
 }
 
