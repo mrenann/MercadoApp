@@ -69,7 +69,6 @@ jobs:
           else
             echo "✅ Detekt passou sem erros!"
             echo "## ✅ Analise do Detekt passou corretamente" >> $GITHUB_STEP_SUMMARY
-          
             echo "### Nenhum problema encontrado" >> $GITHUB_STEP_SUMMARY
             echo "O código está seguindo todas as regras do Detekt corretamente!" >> $GITHUB_STEP_SUMMARY
           fi
