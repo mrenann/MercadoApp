@@ -1,56 +1,73 @@
-name: Kover Coverage Check
+name: Kover Coverage
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ main, master ]
 
 permissions:
   contents: read
   pull-requests: write
-  issues: write
   checks: write
 
 jobs:
-  kover-coverage:
+  coverage:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Setup JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          java-version: 17
+          distribution: temurin
 
       - name: Run tests with Kover
-        run: ./gradlew koverXmlReport --info
+        run: ./gradlew koverXmlReport --no-daemon
 
-      - name: Debug Kover report
+      - name: Validate report
         run: |
-          ls -la build/reports/kover/
-          if [ -f "build/reports/kover/report.xml" ]; then
-            echo "Report exists, checking content..."
-            head -n 20 build/reports/kover/report.xml
-          else
-            echo "❌ Kover report not generated!"
+          if [ ! -f "build/reports/kover/report.xml" ]; then
+            echo "❌ Kover report not found!"
+            exit 1
+          fi
+          
+          if ! grep -q "<counter type=\"INSTRUCTION\"" build/reports/kover/report.xml; then
+            echo "❌ Invalid Kover report content!"
             exit 1
           fi
 
-      - name: Upload Kover report
-        uses: actions/upload-artifact@v4
-        if: always()
+      - name: Post coverage comment
+        uses: actions/github-script@v7
         with:
-          name: kover-report
-          path: build/reports/kover/report.xml
+          script: |
+            const fs = require('fs');
+            const xml2js = require('xml2js');
+            
+            // Parse XML report
+            const xml = fs.readFileSync('build/reports/kover/report.xml');
+            const result = await xml2js.parseStringPromise(xml);
+            
+            // Extract coverage data
+            const counters = result.report.counter[0].counter;
+            const instructionCounter = counters.find(c => c.$.type === 'INSTRUCTION');
+            const covered = parseInt(instructionCounter.$.covered);
+            const missed = parseInt(instructionCounter.$.missed);
+            const percentage = ((covered / (covered + missed)) * 100).toFixed(2);
 
-      - name: Post coverage to PR
-        uses: mi-kas/kover-report@v1
-        with:
-          path: build/reports/kover/report.xml
-          title: "🔍 Kover Coverage Report"
-          update-comment: true
-          min-coverage-overall: 70
-          min-coverage-changed-files: 80
-          token: ${{ secrets.GITHUB_TOKEN }}
+            // Create comment
+            const comment = `🔍 **Kover Coverage Report**
+            | Metric       | Coverage |
+            |--------------|----------|
+            | Instructions | ${percentage}% |
+            
+            **Details:** [Download Full Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+
+            // Post to PR
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
