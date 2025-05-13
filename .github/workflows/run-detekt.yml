@@ -39,6 +39,10 @@ jobs:
       - name: Grant permission to gradlew
         run: chmod +x ./gradlew
 
+      - name: Install reviewdog
+        run: |
+          curl -s https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | bash
+
       - name: Run detekt and report with reviewdog
         run: |
           ./gradlew detekt --quiet --console=plain \
