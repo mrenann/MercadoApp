@@ -28,7 +28,7 @@ data class ItemCategoryResponse(
     @SerializedName("permalink")
     val permalink: Any? = Any(),
     @SerializedName("picture")
-    val picture: Any? = Any(),
+    val picture: String? = "",
     @SerializedName("settings")
     val settings: Settings? = Settings(),
     @SerializedName("total_items_in_this_category")

@@ -3,6 +3,7 @@ package com.mrenann.mercadolivre.searchScreen.presentation.components
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -19,8 +20,10 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import compose.icons.EvaIcons
 import compose.icons.evaicons.Outline
 import compose.icons.evaicons.outline.ChevronLeft
@@ -31,14 +34,25 @@ fun RowScope.SearchField(
     initialQuery: String = "",
     focusRequester: FocusRequester,
     onSearch: (String) -> Unit,
+    onQueryChanged: (String) -> Unit,
     onBack: () -> Unit,
 ) {
-    var query by rememberSaveable { mutableStateOf(initialQuery) }
+    var textFieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(
+            TextFieldValue(
+                text = initialQuery,
+                selection = TextRange(initialQuery.length)
+            )
+        )
+    }
     var isFocused by rememberSaveable { mutableStateOf(false) }
 
     TextField(
-        value = query,
-        onValueChange = { query = it },
+        value = textFieldValue,
+        onValueChange = {
+            textFieldValue = it
+            onQueryChanged(it.text)
+        },
         placeholder = { Text("Buscar no Mercado Livre") },
         modifier = Modifier
             .weight(1f)
@@ -49,8 +63,8 @@ fun RowScope.SearchField(
         singleLine = true,
         keyboardActions = KeyboardActions(
             onSearch = {
-                if (query.isNotBlank()) {
-                    onSearch(query)
+                if (textFieldValue.text.isNotBlank()) {
+                    onSearch(textFieldValue.text)
                 }
             }
         ),
@@ -63,6 +77,11 @@ fun RowScope.SearchField(
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
             disabledContainerColor = Color.White,
+            cursorColor = Color.Black,
+            selectionColors = TextSelectionColors(
+                handleColor = Color.Blue,
+                backgroundColor = Color.LightGray.copy(alpha = 0.4f)
+            )
         ),
         leadingIcon = {
             IconButton(onClick = { onBack() }) {
@@ -70,8 +89,13 @@ fun RowScope.SearchField(
             }
         },
         trailingIcon = {
-            if (query.isNotBlank()) {
-                IconButton(onClick = { query = "" }) {
+            if (textFieldValue.text.isNotBlank()) {
+                IconButton(onClick = {
+                    textFieldValue = TextFieldValue(
+                        text = "",
+                        selection = TextRange(0)
+                    )
+                }) {
                     Icon(EvaIcons.Outline.Close, contentDescription = "Limpar texto")
                 }
             }
@@ -81,6 +105,15 @@ fun RowScope.SearchField(
     LaunchedEffect(isFocused) {
         if (isFocused) {
             focusRequester.requestFocus()
+        }
+    }
+
+    LaunchedEffect(initialQuery) {
+        if (initialQuery != textFieldValue.text) {
+            textFieldValue = TextFieldValue(
+                text = initialQuery,
+                selection = TextRange(initialQuery.length)
+            )
         }
     }
 }
