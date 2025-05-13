@@ -44,14 +44,34 @@ jobs:
         with:
           reviewdog_version: latest
 
-      - name: Run detekt and report with reviewdog
+      - name: Run detekt with reviewdog
         run: |
-          ./gradlew detekt --quiet || true
-          reviewdog \
-            -f=checkstyle \
-            -name="detekt" \
-            -reporter=github-pr-review \
-            -filter-mode=nofilter \
-            < build/reports/detekt/detekt.xml
+          mkdir -p $GITHUB_WORKSPACE/reports
+          
+          ./gradlew detekt --quiet --no-daemon || gradlew_exit_code=$?
+          
+          if [ -f "$GITHUB_WORKSPACE/reports/detekt.xml" ]; then
+            reviewdog \
+              -f=checkstyle \
+              -name="detekt" \
+              -reporter=github-pr-review \
+              -filter-mode=nofilter \
+              -fail-on-error=false \
+              < $GITHUB_WORKSPACE/reports/detekt.xml
+          else
+            echo "⚠️ Relatório não encontrado em: $GITHUB_WORKSPACE/reports/detekt.xml"
+            find $GITHUB_WORKSPACE -name "detekt.xml" || echo "Nenhum relatório encontrado"
+          fi
+          
+          if [ -n "${gradlew_exit_code:-}" ]; then
+            echo "❌ Detekt encontrou problemas (código: $gradlew_exit_code)"
+            exit $gradlew_exit_code
+          else
+            echo "✅ Detekt passou sem erros!"
+            echo "## ✅ Analise do Detekt passou corretamente" >> $GITHUB_STEP_SUMMARY
+          
+            echo "### Nenhum problema encontrado" >> $GITHUB_STEP_SUMMARY
+            echo "O código está seguindo todas as regras do Detekt corretamente!" >> $GITHUB_STEP_SUMMARY
+          fi
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}

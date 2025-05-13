@@ -22,6 +22,11 @@ allprojects {
             txt.required.set(false)
         }
     }
+    tasks.withType<Detekt>().configureEach {
+        reports {
+            xml.outputLocation.set(file("$rootDir/reports/detekt.xml"))
+        }
+    }
 }
 
 android {
