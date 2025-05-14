@@ -1,21 +1,51 @@
-name: Test coverage
+name: Test Coverage
 
 on:
   pull_request:
+    branches: [ master ]
 
 jobs:
-
-  collect_coverage:
+  test-coverage:
+    name: Run Tests and Report Coverage
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: stevenleadbeater/kotlin-kover-action@v1.0.0
-        id: kover-tests
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
         with:
-          coverage-threshold: 80
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          proxy-url: https://add-pr-comment-proxy-94idvmwyie-uc.a.run.app
-      - name: Check coverage
-        if: ${{(steps.kover-tests.outputs.line-coverage) < 80}}
-        shell: bash
-        run: exit "Line coverage expected to be > 80 but was ${{steps.kover-tests.outputs.line-coverage}}"
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Grant execute permission to Gradle
+        run: chmod +x ./gradlew
+
+      - name: Run tests with coverage
+        run: ./gradlew koverXmlReport
+
+      - name: Extract coverage from report
+        id: extract_coverage
+        run: |
+          FILE="build/reports/kover/report.xml"
+          if [ ! -f "$FILE" ]; then
+            echo "❌ Arquivo de cobertura não encontrado."
+            echo "coverage=0" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          COVERED=$(xmllint --xpath "string(//report/counter[@type='INSTRUCTION']/@covered)" $FILE)
+          MISSED=$(xmllint --xpath "string(//report/counter[@type='INSTRUCTION']/@missed)" $FILE)
+          TOTAL=$((COVERED + MISSED))
+          if [ "$TOTAL" -eq 0 ]; then
+            echo "Nenhum dado de cobertura encontrado."
+            echo "coverage=0" >> $GITHUB_OUTPUT
+          else
+            PERCENT=$((COVERED * 100 / TOTAL))
+            echo "coverage=$PERCENT" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment PR with coverage
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: "📊 Cobertura de testes: **${{ steps.extract_coverage.outputs.coverage }}%**"
