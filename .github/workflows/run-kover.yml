@@ -1,21 +1,18 @@
-name: Code Coverage Check
+name: Android Kover Test Coverage
 
 on:
   pull_request:
-    branches:
-      - master
-
-permissions:
-  contents: read
-  pull-requests: write
+    branches: [ main, master, develop ]
+  push:
+    branches: [ main, master, develop ]
 
 jobs:
-  kover_check:
-    name: Kover Coverage Report
+  test-coverage:
+    name: Generate Test Coverage Report
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the code
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up JDK 17
@@ -25,124 +22,54 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Make Gradle executable
-        run: chmod +x ./gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      - name: Debug Kover Tasks
-        run: |
-          # Lista as tasks disponíveis relacionadas ao Kover
-          ./gradlew tasks | grep -i kover || echo "Nenhuma task Kover encontrada"
+      - name: Run tests with Kover
+        run: ./gradlew koverXmlReport
 
-      - name: Generate Kover HTML Report
+      - name: Generate coverage report
+        id: kover-report
         run: |
-          # O formato HTML é geralmente mais fácil de analisar para extrair a cobertura
-          ./gradlew koverHtmlReport || true
+          TOTAL_COVERAGE=$(grep -o 'line-rate="0\.[0-9]*"' app/build/reports/kover/xml/report.xml | grep -o '0\.[0-9]*')
+          COVERAGE_PERCENTAGE=$(echo "$TOTAL_COVERAGE * 100" | bc)
+          echo "Coverage: ${COVERAGE_PERCENTAGE}%"
+          echo "coverage=$COVERAGE_PERCENTAGE" >> $GITHUB_OUTPUT
 
-      - name: Extract Coverage from Reports
-        id: extract_coverage
+      - name: Comment coverage on PR
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: test-coverage
+          message: |
+            ## 📊 Cobertura de Código
+            
+            **Cobertura Total: ${{ steps.kover-report.outputs.coverage }}%**
+            
+            <details>
+              <summary>Detalhes de Cobertura</summary>
+            
+              Este relatório foi gerado pelo Kover v0.9.1
+            
+              Para melhorar a cobertura:
+              - Adicione testes para funções e classes não testadas
+              - Assegure que fluxos condicionais estejam cobertos
+              - Verifique que exceções e casos de erro são testados
+            </details>
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: kover-report
+          path: app/build/reports/kover/
+
+      - name: Check coverage threshold
         run: |
-          echo "Localizando relatórios Kover:"
-          find . -name "*kover*" -type d || echo "Nenhum diretório Kover encontrado"
-          
-          # Verifica se o diretório HTML existe
-          HTML_DIR=$(find . -path "*/kover/html*" -type d | head -1)
-          echo "Diretório HTML: $HTML_DIR"
-          
-          # Tenta extrair cobertura do index.html se existir
-          if [ -n "$HTML_DIR" ] && [ -f "$HTML_DIR/index.html" ]; then
-            COVERAGE=$(grep -o "Total.*[0-9]\+%" "$HTML_DIR/index.html" | grep -o "[0-9]\+%" | head -1 | sed 's/%//g' || echo "0")
-            echo "Cobertura extraída do HTML: $COVERAGE%"
+          COVERAGE=${{ steps.kover-report.outputs.coverage }}
+          if (( $(echo "$COVERAGE < 70" | bc -l) )); then
+            echo "⚠️ Cobertura abaixo do limite recomendado de 70%"
+            echo "Cobertura atual: $COVERAGE%"
           else
-            COVERAGE="0"
-            echo "Arquivo HTML não encontrado"
+            echo "✅ Cobertura acima do limite recomendado de 70%"
+            echo "Cobertura atual: $COVERAGE%"
           fi
-          
-          # Se não conseguiu do HTML, tenta do XML
-          if [ "$COVERAGE" == "0" ]; then
-            XML_FILE=$(find . -path "*/kover/*" -name "*.xml" | head -1)
-            if [ -n "$XML_FILE" ]; then
-              echo "Arquivo XML encontrado: $XML_FILE"
-              cat "$XML_FILE" | head -20  # Mostra primeiras linhas para análise
-              COVERAGE=$(grep -o 'line-rate="[0-9.]*"' "$XML_FILE" | head -1 | cut -d'"' -f2 | awk '{printf "%.0f", $1 * 100}' || echo "0")
-              echo "Cobertura extraída do XML: $COVERAGE%"
-            fi
-          fi
-          
-          # Método alternativo: executar koverVerify e capturar sua saída
-          if [ "$COVERAGE" == "0" ]; then
-            echo "Tentando extrair da saída do koverVerify..."
-            VERIFY_OUTPUT=$(./gradlew koverVerify --info 2>&1)
-            echo "$VERIFY_OUTPUT" > kover_output.txt
-            echo "Saída completa salva em kover_output.txt"
-          
-            # Tenta várias expressões regulares diferentes para diferentes formatos de saída
-            COVERAGE=$(echo "$VERIFY_OUTPUT" | grep -o -E "(Coverage|covered by tests)[^0-9]*[0-9]+(\.[0-9]+)?%" | grep -o -E "[0-9]+(\.[0-9]+)?%" | head -1 | sed 's/%//g' || echo "0")
-            echo "Cobertura extraída do koverVerify: $COVERAGE%"
-          fi
-          
-          # Se ainda está vazio ou não é um número, definir como 0
-          if [ -z "$COVERAGE" ] || ! [[ "$COVERAGE" =~ ^[0-9]+$ ]]; then
-            echo "Valor de cobertura inválido ou vazio. Definindo como 0."
-            COVERAGE="0"
-          fi
-          
-          # Método manual de extração
-          if [ "$COVERAGE" == "0" ]; then
-            echo "Tentando método manual baseado nos métodos cobertos..."
-            METHODS_TOTAL=$(find . -name "*.kt" -o -name "*.java" | xargs grep -l "fun " | wc -l)
-            # Apenas uma estimativa para demonstração
-            METHODS_COVERED=$(find . -name "*Test.kt" -o -name "*Test.java" | wc -l)
-          
-            if [ $METHODS_TOTAL -gt 0 ]; then
-              COVERAGE=$((METHODS_COVERED * 100 / METHODS_TOTAL))
-              echo "Cobertura estimada manualmente: $COVERAGE%"
-            fi
-          fi
-          
-          # Garante que temos um valor numérico
-          echo "Valor final de cobertura: $COVERAGE%"
-          echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
-
-      - name: Report Coverage in PR Comment
-        if: always()  # Sempre executa este passo, independente de falhas anteriores
-        run: |
-          COVERAGE="${{ steps.extract_coverage.outputs.coverage }}"
-          # Garante que a variável tenha um valor numérico
-          COVERAGE=${COVERAGE:-0}
-          
-          if [ "$COVERAGE" -ge 50 ]; then
-            STATUS_ICON="✅ Esta PR atende aos requisitos mínimos de cobertura."
-          else
-            STATUS_ICON="❌ Esta PR não atende aos requisitos mínimos de cobertura."
-          fi
-          
-          # Cria o comentário
-          COMMENT="## 📊 Cobertura de Código: ${COVERAGE}%
-          
-            **Requisito mínimo:** 50%
-          
-            ${STATUS_ICON}
-          
-            *Os seguintes padrões foram excluídos da análise:*
-          - Classes anotadas com \`@Composable\` e \`@Preview\`
-          - Pacotes de telas e componentes de UI
-          - Pacotes de temas e injeção de dependência"
-          
-            # Usa o token do GitHub para adicionar o comentário
-            echo "$COMMENT" > coverage_comment.md
-          
-            # Usa GitHub CLI para comentar no PR com a variável GH_TOKEN correta
-            gh pr comment ${{ github.event.pull_request.number }} --body-file coverage_comment.md
-            env:
-              GH_TOKEN: ${{ github.token }}
-          
-            # Opcional: Upload dos relatórios como artefatos do workflow
-            - name: Upload Coverage Reports
-              if: always()
-              uses: actions/upload-artifact@v3
-              with:
-                name: kover-reports
-                path: |
-                  **/build/reports/kover/
-                  kover_output.txt
-                if-no-files-found: ignore
