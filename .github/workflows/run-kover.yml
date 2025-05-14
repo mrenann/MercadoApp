@@ -28,102 +28,106 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run tests with Kover
-        run: ./gradlew koverXmlReport --stacktrace
+        run: |
+          # Run tests with Kover for all modules
+          ./gradlew test koverXmlReport --stacktrace
 
       - name: Store XML report
         uses: actions/upload-artifact@v4
         with:
           name: kover-xml-report
-          path: app/build/reports/kover/xml/report.xml
+          path: build/reports/kover/xml/report.xml
 
       - name: Extract coverage percentage
         id: kover-report
         run: |
-          # Debug: check what files are in the kover directory
-          echo "Conteúdo do diretório app/build/reports/kover:"
-          ls -la app/build/reports/kover/
+          # Procura relatórios em todos os módulos
+          echo "Procurando relatórios em todos os módulos:"
+          find . -name "report.xml" | grep -i kover
           
-          # Find the XML report file
-          REPORT_PATH="app/build/reports/kover/report.xml"
-          if [ ! -f "$REPORT_PATH" ]; then
-            echo "❌ Report not found at $REPORT_PATH"
+          # Lista os arquivos nos diretórios principais
+          echo "Conteúdo dos diretórios de relatórios:"
+          find . -path "*/build/reports/kover*" -type d | xargs ls -la 2>/dev/null || echo "Nenhum diretório encontrado"
           
-            # Try alternative locations
-            ALTERNATIVE_PATH="app/build/reports/kover/xml/report.xml"
-            if [ -f "$ALTERNATIVE_PATH" ]; then
-              REPORT_PATH="$ALTERNATIVE_PATH"
-              echo "✅ Found report at alternative location: $REPORT_PATH"
+          # Procura especificamente no módulo app
+          if [ -d "app/build/reports/kover" ]; then
+            echo "Encontrado diretório de relatório no módulo app:"
+            ls -la app/build/reports/kover/
+          fi
+          
+          # Encontra todos os relatórios XML
+          REPORT_FILES=$(find . -name "report.xml" | grep -i kover)
+          
+          if [ -z "$REPORT_FILES" ]; then
+            echo "❌ Nenhum arquivo report.xml encontrado"
+            COVERAGE_PERCENTAGE="NA"
+          else
+            # Inicializa contadores totais
+            TOTAL_COVERED=0
+            TOTAL_MISSED=0
+          
+            echo "Processando os seguintes relatórios:"
+            echo "$REPORT_FILES"
+          
+            # Processa cada arquivo de relatório
+            for REPORT_PATH in $REPORT_FILES; do
+              echo "Analisando relatório: $REPORT_PATH"
+              echo "Conteúdo do relatório:"
+              cat "$REPORT_PATH"
+          
+              # Extrai dados de cobertura
+              LINE_COVERED=$(grep -o 'type="LINE".*covered="[0-9]*"' "$REPORT_PATH" | grep -o 'covered="[0-9]*"' | grep -o '[0-9]*' | awk '{ sum += $1 } END { print sum }')
+              LINE_MISSED=$(grep -o 'type="LINE".*missed="[0-9]*"' "$REPORT_PATH" | grep -o 'missed="[0-9]*"' | grep -o '[0-9]*' | awk '{ sum += $1 } END { print sum }')
+          
+              echo "Relatório $REPORT_PATH - linhas cobertas: $LINE_COVERED, linhas não cobertas: $LINE_MISSED"
+          
+              # Soma aos totais
+              TOTAL_COVERED=$((TOTAL_COVERED + LINE_COVERED))
+              TOTAL_MISSED=$((TOTAL_MISSED + LINE_MISSED))
+            done
+          
+            echo "Total combinado - Linhas cobertas: $TOTAL_COVERED, Linhas não cobertas: $TOTAL_MISSED"
+          
+            # Calcula porcentagem de cobertura
+            TOTAL_LINES=$((TOTAL_COVERED + TOTAL_MISSED))
+          
+            if [ "$TOTAL_LINES" -eq 0 ]; then
+              echo "⚠️ Nenhuma linha de código para testar encontrada em todos os relatórios."
+              COVERAGE_PERCENTAGE="NA"
             else
-              echo "❌ Report not found at $ALTERNATIVE_PATH either"
-          
-              # Last attempt - find it anywhere in the build directory
-              FOUND_PATH=$(find build -name "report.xml" -type f | head -n 1)
-              if [ -n "$FOUND_PATH" ]; then
-                REPORT_PATH="$FOUND_PATH"
-                echo "✅ Found report at: $REPORT_PATH"
-              else
-                echo "❌ Could not find any report.xml file"
-                exit 1
-              fi
+              TOTAL_COVERAGE=$(echo "scale=4; $TOTAL_COVERED / $TOTAL_LINES" | bc)
+              COVERAGE_PERCENTAGE=$(echo "scale=2; $TOTAL_COVERAGE * 100" | bc -l)
+              echo "📊 Cobertura calculada: ${COVERAGE_PERCENTAGE}%"
             fi
           fi
           
-          echo "Report content preview:"
-          head -n 10 "$REPORT_PATH"
-          
-          # Try multiple XML extraction patterns
-          echo "Attempting to extract coverage metrics..."
-          
-          # Method 1: Extract line-rate from coverage tag
-          TOTAL_COVERAGE=$(grep -o 'line-rate="[0-9.]*"' "$REPORT_PATH" | head -n 1 | cut -d'"' -f2)
-          
-          # Method 2: If that fails, try extracting from counter tags
-          if [ -z "$TOTAL_COVERAGE" ]; then
-            echo "Method 1 failed, trying method 2..."
-            LINE_COVERED=$(grep -o 'type="LINE" covered="[0-9]*"' "$REPORT_PATH" | cut -d'"' -f3)
-            LINE_MISSED=$(grep -o 'type="LINE" missed="[0-9]*"' "$REPORT_PATH" | cut -d'"' -f3)
-          
-            if [ -n "$LINE_COVERED" ] && [ -n "$LINE_MISSED" ]; then
-              TOTAL=$(($LINE_COVERED + $LINE_MISSED))
-              if [ "$TOTAL" -gt 0 ]; then
-                TOTAL_COVERAGE=$(echo "scale=4; $LINE_COVERED / $TOTAL" | bc)
-              fi
-            fi
-          fi
-          
-          # Method 3: Try using xmllint for more reliable XML parsing
-          if [ -z "$TOTAL_COVERAGE" ]; then
-            echo "Method 2 failed, trying method 3 with xmllint..."
-            apt-get update && apt-get install -y libxml2-utils
-          
-            TOTAL_COVERAGE=$(xmllint --xpath "string(/report/counter[@type='LINE']/@covered) div (string(/report/counter[@type='LINE']/@covered) + string(/report/counter[@type='LINE']/@missed))" "$REPORT_PATH" 2>/dev/null || echo "")
-          
-            if [ -z "$TOTAL_COVERAGE" ]; then
-              TOTAL_COVERAGE=$(xmllint --xpath "string(//coverage/@line-rate)" "$REPORT_PATH" 2>/dev/null || echo "")
-            fi
-          fi
-          
-          # Final fallback - check actual XML structure and print for debugging
-          if [ -z "$TOTAL_COVERAGE" ]; then
-            echo "All extraction methods failed. XML structure may be unexpected."
-            echo "First 30 lines of report:"
-            head -n 30 "$REPORT_PATH"
-          
-            # Create a minimal default value to avoid workflow failure
-            TOTAL_COVERAGE="0"
-            echo "⚠️ Using default coverage value of 0%"
-          fi
-          
-          # Validate and calculate percentage
-          if [[ ! "$TOTAL_COVERAGE" =~ ^[0-9.]+$ ]]; then
-            echo "❌ Invalid coverage value: $TOTAL_COVERAGE"
-            TOTAL_COVERAGE="0"
-          fi
-          
-          # Calculate coverage percentage
-          COVERAGE_PERCENTAGE=$(echo "scale=2; $TOTAL_COVERAGE * 100" | bc -l)
-          echo "📊 Coverage: ${COVERAGE_PERCENTAGE}%"
           echo "coverage=$COVERAGE_PERCENTAGE" >> $GITHUB_OUTPUT
+          
+          # Cria relatório de debug detalhado
+          {
+            echo "## Relatório de Cobertura de Código"
+            echo
+            echo "### Resumo"
+            echo "* Total de linhas cobertas: $TOTAL_COVERED"
+            echo "* Total de linhas não cobertas: $TOTAL_MISSED"
+            echo "* Total de linhas: $TOTAL_LINES"
+            echo "* Porcentagem de cobertura: ${COVERAGE_PERCENTAGE}%"
+            echo
+            echo "### Relatórios Encontrados"
+            echo "$REPORT_FILES"
+            echo
+            echo "### Conteúdo dos Relatórios"
+          
+            for REPORT_PATH in $REPORT_FILES; do
+              echo
+              echo "#### $REPORT_PATH"
+              echo '```xml'
+              cat "$REPORT_PATH"
+              echo '```'
+            done
+          } > coverage-report.md
+          
+          echo "debug_report=coverage-report.md" >> $GITHUB_OUTPUT
 
       - name: Comment coverage on PR
         if: github.event_name == 'pull_request'
@@ -133,31 +137,43 @@ jobs:
           message: |
             ## 📊 Cobertura de Código
             
-            **Cobertura Total: ${{ steps.kover-report.outputs.coverage }}%**
+            **Cobertura Total: ${{ steps.kover-report.outputs.coverage == 'NA' && 'N/A - Sem código para testar' || format('{0}%', steps.kover-report.outputs.coverage) }}**
             
             <details>
               <summary>Detalhes de Cobertura</summary>
             
               Este relatório foi gerado pelo Kover v0.9.1
             
-              Para melhorar a cobertura:
-              - Adicione testes para funções e classes não testadas
-              - Assegure que fluxos condicionais estejam cobertos
-              - Verifique que exceções e casos de erro são testados
+              ${{ steps.kover-report.outputs.coverage == 'NA' && '⚠️ **Aviso**: Nenhuma linha de código encontrada para teste. Isto pode indicar que:' || '' }}
+              ${{ steps.kover-report.outputs.coverage == 'NA' && '- O projeto não contém código testável' || '' }}
+              ${{ steps.kover-report.outputs.coverage == 'NA' && '- Kover não está configurado para encontrar o código-fonte' || '' }}
+              ${{ steps.kover-report.outputs.coverage == 'NA' && '- Os testes não estão sendo executados corretamente' || '' }}
+            
+              ${{ steps.kover-report.outputs.coverage != 'NA' && 'Para melhorar a cobertura:' || '' }}
+              ${{ steps.kover-report.outputs.coverage != 'NA' && '- Adicione testes para funções e classes não testadas' || '' }}
+              ${{ steps.kover-report.outputs.coverage != 'NA' && '- Assegure que fluxos condicionais estejam cobertos' || '' }}
+              ${{ steps.kover-report.outputs.coverage != 'NA' && '- Verifique que exceções e casos de erro são testados' || '' }}
             </details>
 
-      - name: Upload full report
+      - name: Upload debug report
         uses: actions/upload-artifact@v4
         with:
-          name: kover-full-report
-          path: app/build/reports/kover/
+          name: coverage-debug-report
+          path: coverage-report.md
 
       - name: Check coverage threshold
         run: |
           MIN_COVERAGE=70
-          COVERAGE=${{ steps.kover-report.outputs.coverage }}
+          COVERAGE="${{ steps.kover-report.outputs.coverage }}"
           
-          if (( $(echo "$COVERAGE < $MIN_COVERAGE" | bc -l) )); then
+          if [ "$COVERAGE" == "NA" ]; then
+            echo "⚠️ Não foi possível calcular a cobertura - sem linhas de código para testar"
+            # Optionally, you can make this a warning but not a failure
+            # exit 0
+            # Or make it fail:
+            echo "::error::⚠️ Sem linhas de código testáveis encontradas. Verifique a configuração do Kover."
+            exit 1
+          elif (( $(echo "$COVERAGE < $MIN_COVERAGE" | bc -l) )); then
             echo "::error::⚠️ Cobertura abaixo do limite de ${MIN_COVERAGE}% (Atual: ${COVERAGE}%)"
             exit 1
           else
