@@ -40,73 +40,72 @@ jobs:
       - name: Extract coverage percentage
         id: kover-report
         run: |
-          echo "Procurando relatórios em todos os módulos:"
+          echo "Searching for reports in all modules:"
           find . -name "report.xml" | grep -i kover
 
-          echo "Conteúdo dos diretórios de relatórios:"
-          find . -path "*/build/reports/kover*" -type d | xargs ls -la 2>/dev/null || echo "Nenhum diretório encontrado"
+          echo "Contents of report directories:"
+          find . -path "*/build/reports/kover*" -type d | xargs ls -la 2>/dev/null || echo "No directories found"
 
           if [ -d "app/build/reports/kover" ]; then
-            echo "Encontrado diretório de relatório no módulo app:"
+            echo "Found report directory in app module:"
             ls -la app/build/reports/kover/
           fi
-          
           
           REPORT_FILES=$(find . -name "report.xml" | grep -i kover)
           
           if [ -z "$REPORT_FILES" ]; then
-            echo "❌ Nenhum arquivo report.xml encontrado"
+            echo "❌ No report.xml file found"
             COVERAGE_PERCENTAGE="NA"
           else
             TOTAL_COVERED=0
             TOTAL_MISSED=0
           
-            echo "Processando os seguintes relatórios:"
+            echo "Processing the following reports:"
             echo "$REPORT_FILES"
 
             for REPORT_PATH in $REPORT_FILES; do
-              echo "Analisando relatório: $REPORT_PATH"
-              echo "Conteúdo do relatório:"
+              echo "Analyzing report: $REPORT_PATH"
+              echo "Report contents:"
               cat "$REPORT_PATH"
 
               LINE_COVERED=$(grep -o 'type="LINE".*covered="[0-9]*"' "$REPORT_PATH" | grep -o 'covered="[0-9]*"' | grep -o '[0-9]*' | awk '{ sum += $1 } END { print sum }')
               LINE_MISSED=$(grep -o 'type="LINE".*missed="[0-9]*"' "$REPORT_PATH" | grep -o 'missed="[0-9]*"' | grep -o '[0-9]*' | awk '{ sum += $1 } END { print sum }')
           
-              echo "Relatório $REPORT_PATH - linhas cobertas: $LINE_COVERED, linhas não cobertas: $LINE_MISSED"
+              echo "Report $REPORT_PATH - covered lines: $LINE_COVERED, missed lines: $LINE_MISSED"
 
               TOTAL_COVERED=$((TOTAL_COVERED + LINE_COVERED))
               TOTAL_MISSED=$((TOTAL_MISSED + LINE_MISSED))
             done
           
-            echo "Total combinado - Linhas cobertas: $TOTAL_COVERED, Linhas não cobertas: $TOTAL_MISSED"
+            echo "Combined total - Covered lines: $TOTAL_COVERED, Missed lines: $TOTAL_MISSED"
 
             TOTAL_LINES=$((TOTAL_COVERED + TOTAL_MISSED))
           
             if [ "$TOTAL_LINES" -eq 0 ]; then
-              echo "⚠️ Nenhuma linha de código para testar encontrada em todos os relatórios."
+              echo "⚠️ No lines of code to test found in all reports."
               COVERAGE_PERCENTAGE="NA"
             else
               TOTAL_COVERAGE=$(echo "scale=4; $TOTAL_COVERED / $TOTAL_LINES" | bc)
               COVERAGE_PERCENTAGE=$(echo "scale=2; $TOTAL_COVERAGE * 100" | bc -l)
-              echo "📊 Cobertura calculada: ${COVERAGE_PERCENTAGE}%"
+              echo "📊 Calculated coverage: ${COVERAGE_PERCENTAGE}%"
             fi
           fi
           
           echo "coverage=$COVERAGE_PERCENTAGE" >> $GITHUB_OUTPUT
 
           {
-            echo "## Relatório de Cobertura de Código"
+            echo "## Code Coverage Report"
             echo
-            echo "### Resumo"
-            echo "* Total de linhas cobertas: $TOTAL_COVERED"
-            echo "* Total de linhas não cobertas: $TOTAL_MISSED"
-            echo "* Total de linhas: $TOTAL_LINES"
-            echo "* Porcentagem de cobertura: ${COVERAGE_PERCENTAGE}%"
+            echo "### Summary"
+            echo "* Total covered lines: $TOTAL_COVERED"
+            echo "* Total missed lines: $TOTAL_MISSED"
+            echo "* Total lines: $TOTAL_LINES"
+            echo "* Coverage percentage: ${COVERAGE_PERCENTAGE}%"
             echo
-            echo "### Relatórios Encontrados"
+            echo "### Reports Found"
             echo "$REPORT_FILES"
             echo
-            echo "### Conteúdo dos Relatórios"
+            echo "### Report Contents"
           
             for REPORT_PATH in $REPORT_FILES; do
               echo
@@ -125,24 +124,24 @@ jobs:
         with:
           header: test-coverage
           message: |
-            ## 📊 Cobertura de Código
+            ## 📊 Code Coverage
             
-            **Cobertura Total: ${{ steps.kover-report.outputs.coverage == 'NA' && 'N/A - Sem código para testar' || format('{0}%', steps.kover-report.outputs.coverage) }}**
+            **Total Coverage: ${{ steps.kover-report.outputs.coverage == 'NA' && 'N/A - No code to test' || format('{0}%', steps.kover-report.outputs.coverage) }}**
             
             <details>
-              <summary>Detalhes de Cobertura</summary>
+              <summary>Coverage Details</summary>
             
-              Este relatório foi gerado pelo Kover v0.9.1
+              This report was generated by Kover v0.9.1
             
-              ${{ steps.kover-report.outputs.coverage == 'NA' && '⚠️ **Aviso**: Nenhuma linha de código encontrada para teste. Isto pode indicar que:' || '' }}
-              ${{ steps.kover-report.outputs.coverage == 'NA' && '- O projeto não contém código testável' || '' }}
-              ${{ steps.kover-report.outputs.coverage == 'NA' && '- Kover não está configurado para encontrar o código-fonte' || '' }}
-              ${{ steps.kover-report.outputs.coverage == 'NA' && '- Os testes não estão sendo executados corretamente' || '' }}
+              ${{ steps.kover-report.outputs.coverage == 'NA' && '⚠️ **Warning**: No lines of code found to test. This may indicate that:' || '' }}
+              ${{ steps.kover-report.outputs.coverage == 'NA' && '- The project does not contain testable code' || '' }}
+              ${{ steps.kover-report.outputs.coverage == 'NA' && '- Kover is not configured to locate the source code' || '' }}
+              ${{ steps.kover-report.outputs.coverage == 'NA' && '- Tests are not being executed properly' || '' }}
             
-              ${{ steps.kover-report.outputs.coverage != 'NA' && 'Para melhorar a cobertura:' || '' }}
-              ${{ steps.kover-report.outputs.coverage != 'NA' && '- Adicione testes para funções e classes não testadas' || '' }}
-              ${{ steps.kover-report.outputs.coverage != 'NA' && '- Assegure que fluxos condicionais estejam cobertos' || '' }}
-              ${{ steps.kover-report.outputs.coverage != 'NA' && '- Verifique que exceções e casos de erro são testados' || '' }}
+              ${{ steps.kover-report.outputs.coverage != 'NA' && 'To improve coverage:' || '' }}
+              ${{ steps.kover-report.outputs.coverage != 'NA' && '- Add tests for uncovered functions and classes' || '' }}
+              ${{ steps.kover-report.outputs.coverage != 'NA' && '- Ensure conditional flows are covered' || '' }}
+              ${{ steps.kover-report.outputs.coverage != 'NA' && '- Verify that exceptions and error cases are tested' || '' }}
             </details>
 
       - name: Upload debug report
@@ -157,15 +156,12 @@ jobs:
           COVERAGE="${{ steps.kover-report.outputs.coverage }}"
           
           if [ "$COVERAGE" == "NA" ]; then
-            echo "⚠️ Não foi possível calcular a cobertura - sem linhas de código para testar"
-            # Optionally, you can make this a warning but not a failure
-            # exit 0
-            # Or make it fail:
-            echo "::error::⚠️ Sem linhas de código testáveis encontradas. Verifique a configuração do Kover."
+            echo "⚠️ Could not calculate coverage - no lines of code to test"
+            echo "::error::⚠️ No testable code lines found. Please check Kover configuration."
             exit 1
           elif (( $(echo "$COVERAGE < $MIN_COVERAGE" | bc -l) )); then
-            echo "::error::⚠️ Cobertura abaixo do limite de ${MIN_COVERAGE}% (Atual: ${COVERAGE}%)"
+            echo "::error::⚠️ Coverage below the threshold of ${MIN_COVERAGE}% (Current: ${COVERAGE}%)"
             exit 1
           else
-            echo "✅ Cobertura acima do limite de ${MIN_COVERAGE}%"
+            echo "✅ Coverage is above the threshold of ${MIN_COVERAGE}%"
           fi
