@@ -22,6 +22,13 @@ internal val EsStrings = Strings(
         cca = ""
     ),
     searchStrings = SearchStrings(
-        cca = ""
+        withouTitle = "Sin título",
+        currencyDefault = "ARS",
+        freeShipping = "Envío gratis",
+        searchOnMercadoLivre = "Buscar en Mercado Libre",
+        clearIconDescription = "Limpiar búsqueda",
+        backIconDescription = "Volver",
+        backToHome = "Volver a Inicio",
+        recentSearches = "Últimas búsquedas"
     )
 )

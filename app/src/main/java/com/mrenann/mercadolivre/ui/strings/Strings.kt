@@ -24,7 +24,14 @@ data class CoreStrings(
 )
 
 data class SearchStrings(
-    val cca: String
+    val withouTitle: String,
+    val currencyDefault: String,
+    val freeShipping: String,
+    val searchOnMercadoLivre: String,
+    val clearIconDescription: String,
+    val backIconDescription: String,
+    val backToHome: String,
+    val recentSearches: String
 )
 
 data class DetailsStrings(

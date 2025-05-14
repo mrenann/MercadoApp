@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.lyricist.strings
 import coil3.compose.AsyncImage
 import com.mrenann.mercadolivre.core.domain.model.SearchResult
 import com.mrenann.mercadolivre.core.utils.formatBalance
@@ -32,6 +33,8 @@ fun ItemCard(
     modifier: Modifier = Modifier,
     onItemClick: () -> Unit = {},
 ) {
+    val strings = strings.searchStrings
+
     Card(
         modifier =
             modifier
@@ -47,7 +50,7 @@ fun ItemCard(
             Row {
                 AsyncImage(
                     model = item.thumbnail,
-                    contentDescription = item.title ?: "Sem Título",
+                    contentDescription = item.title ?: strings.withouTitle,
                     modifier =
                         Modifier
                             .size(150.dp)
@@ -64,7 +67,7 @@ fun ItemCard(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = item.title ?: "Sem Título",
+                        text = item.title ?: strings.withouTitle,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 2,
@@ -76,7 +79,7 @@ fun ItemCard(
                         Text(
 
                             text = item.originalPrice.formatBalance(
-                                currency = item.currencyId ?: "BRL",
+                                currency = item.currencyId ?: strings.currencyDefault,
                             ),
                             fontSize = 13.sp,
                             color = Color.Gray,
@@ -86,7 +89,7 @@ fun ItemCard(
 
                     Text(
                         text = (item.price ?: 0.0).formatBalance(
-                            currency = item.currencyId ?: "BRL",
+                            currency = item.currencyId ?: strings.currencyDefault,
                         ),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -95,7 +98,7 @@ fun ItemCard(
 
                     if (item.freeShipping == true) {
                         Text(
-                            text = "Frete grátis",
+                            text = strings.freeShipping,
                             fontSize = 13.sp,
                             color = Color.Green,
                             fontWeight = FontWeight.Medium,

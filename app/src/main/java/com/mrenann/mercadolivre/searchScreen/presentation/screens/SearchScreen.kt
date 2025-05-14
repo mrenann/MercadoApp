@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import cafe.adriel.lyricist.strings
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -63,7 +64,7 @@ data class SearchScreen(
 
             Spacer(Modifier.height(16.dp))
             Text(
-                text = "Últimas buscas",
+                text = strings.searchStrings.recentSearches,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(start = 16.dp),
             )

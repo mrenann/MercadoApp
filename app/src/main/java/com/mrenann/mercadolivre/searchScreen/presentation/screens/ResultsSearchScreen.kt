@@ -8,14 +8,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import cafe.adriel.lyricist.strings
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mrenann.mercadolivre.core.presentation.components.ErrorView
+import com.mrenann.mercadolivre.core.presentation.components.Header
 import com.mrenann.mercadolivre.core.presentation.components.LoadingView
 import com.mrenann.mercadolivre.detailsScreen.presentation.screens.DetailsScreen
-import com.mrenann.mercadolivre.core.presentation.components.Header
 import com.mrenann.mercadolivre.searchScreen.presentation.components.ItemCard
 import com.mrenann.mercadolivre.searchScreen.presentation.screenModel.SearchScreenModel
 
@@ -47,7 +48,7 @@ data class ResultsSearchScreen(
                 is SearchScreenModel.State.Error -> {
                     ErrorView(
                         message = (state as SearchScreenModel.State.Error).message,
-                        buttonText = "Voltar pro ínicio",
+                        buttonText = strings.searchStrings.backToHome,
                         onButtonClick = { navigator.pop() },
                     )
                 }

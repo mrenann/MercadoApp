@@ -22,6 +22,13 @@ internal val PtStrings = Strings(
         cca = ""
     ),
     searchStrings = SearchStrings(
-        cca = ""
+        withouTitle = "Sem Título",
+        currencyDefault = "BRL",
+        freeShipping = "Frete Grátis",
+        searchOnMercadoLivre = "Buscar no Mercado Livre",
+        clearIconDescription = "Limpar busca",
+        backIconDescription = "Voltar",
+        backToHome = "Voltar para o Inicio",
+        recentSearches = "Ultimas Buscas"
     )
 )

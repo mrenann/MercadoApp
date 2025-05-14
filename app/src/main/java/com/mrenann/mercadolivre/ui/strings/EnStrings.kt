@@ -22,6 +22,13 @@ internal val EnStrings = Strings(
         cca = ""
     ),
     searchStrings = SearchStrings(
-        cca = ""
+        withouTitle = "Untitled",
+        currencyDefault = "BRL",
+        freeShipping = "Free Shipping",
+        searchOnMercadoLivre = "Search on Mercado Livre",
+        clearIconDescription = "Clear Search",
+        backIconDescription = "Back",
+        backToHome = "Back to Home",
+        recentSearches = "Recent Searches"
     )
 )
