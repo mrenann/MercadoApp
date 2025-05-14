@@ -1,4 +1,7 @@
-addReviewers: false
 addAssignees: true
 assignees:
   - mrenann
+
+addReviewers: false
+skipKeywords:
+  - wip

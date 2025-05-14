@@ -1,4 +1,4 @@
-package com.mrenann.mercadolivre.detailsScreen.presentation.screen
+package com.mrenann.mercadolivre.detailsScreen.presentation.screens
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding

@@ -6,6 +6,7 @@ import com.mrenann.mercadolivre.core.data.remote.model.search.Result
 import com.mrenann.mercadolivre.core.data.remote.model.search.Shipping
 import com.mrenann.mercadolivre.core.data.remote.response.SearchQueryResponse
 import com.mrenann.mercadolivre.core.utils.Resource
+import com.mrenann.mercadolivre.searchScreen.domain.repository.SearchRepository
 import com.mrenann.mercadolivre.searchScreen.domain.source.SearchDataSource
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -13,11 +14,20 @@ import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Test
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SearchRepositoryImplTest {
+
+    private val dataSource = mockk<SearchDataSource>()
+    private lateinit var repository: SearchRepository
+
+    @Before
+    fun setup() {
+        repository = SearchRepositoryImpl(dataSource)
+    }
 
     @Test
     fun `when search is called, repository should return mapped domain model from dataSource`() =
@@ -39,10 +49,9 @@ class SearchRepositoryImplTest {
             )
 
 
-            val dataSource = mockk<SearchDataSource>()
+
             coEvery { dataSource.search("arroz") } returns flowOf(Resource.Success(fakeResponse))
 
-            val repository = SearchRepositoryImpl(dataSource)
 
             val expected = Resource.Success(fakeResponse.results?.map { it.toDomain() })
             repository.searchProducts("arroz").test {
@@ -53,10 +62,7 @@ class SearchRepositoryImplTest {
 
     @Test
     fun `when dataSource emits Loading, repository should emit Loading`() = runTest {
-        val dataSource = mockk<SearchDataSource>()
         coEvery { dataSource.search("arroz") } returns flowOf(Resource.Loading)
-
-        val repository = SearchRepositoryImpl(dataSource)
 
         repository.searchProducts("arroz").test {
             assertEquals(Resource.Loading, awaitItem())
@@ -67,10 +73,7 @@ class SearchRepositoryImplTest {
     @Test
     fun `when dataSource emits Error, repository should emit Error with same message`() = runTest {
         val errorMessage = "Algo deu errado"
-        val dataSource = mockk<SearchDataSource>()
         coEvery { dataSource.search("arroz") } returns flowOf(Resource.Error(errorMessage))
-
-        val repository = SearchRepositoryImpl(dataSource)
 
         repository.searchProducts("arroz").test {
             assertEquals(Resource.Error(errorMessage), awaitItem())

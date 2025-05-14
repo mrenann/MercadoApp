@@ -73,6 +73,48 @@ ktlint {
     }
 }
 
+
+kover {
+    reports {
+        total {
+            xml {
+                onCheck = true
+            }
+        }
+
+        verify {
+            rule {
+                minBound(50)
+            }
+        }
+
+        filters {
+            excludes {
+                annotatedBy(
+                    "androidx.compose.runtime.Composable",
+                    "androidx.compose.ui.tooling.preview.Preview"
+                )
+                packages(
+                    "com.mrenann.mercadolivre.*.presentation.screens*",
+                    "com.mrenann.mercadolivre.*.presentation.components*",
+                    "com.mrenann.mercadolivre.ui.theme",
+                    "com.mrenann.mercadolivre.*.di"
+                )
+            }
+        }
+        total {
+            xml {
+                onCheck = true
+            }
+
+            html {
+                onCheck = true
+            }
+        }
+    }
+
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
