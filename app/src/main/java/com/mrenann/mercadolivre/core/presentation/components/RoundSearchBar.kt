@@ -1,4 +1,4 @@
-package com.mrenann.mercadolivre.homeScreen.presentation.components
+package com.mrenann.mercadolivre.core.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import compose.icons.EvaIcons
@@ -39,7 +40,9 @@ fun RoundSearchBar(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Icon(
-            modifier = Modifier.size(18.dp),
+            modifier = Modifier
+                .size(18.dp)
+                .testTag("search_icon"),
             imageVector = EvaIcons.Outline.Search,
             tint = Color.Gray,
             contentDescription = "Search Icon",
@@ -47,7 +50,8 @@ fun RoundSearchBar(
         Text(
             text = displayText,
             color = displayColor,
-            fontSize = 14.sp
+            fontSize = 14.sp,
+            modifier = Modifier.testTag("search_text")
         )
     }
 }

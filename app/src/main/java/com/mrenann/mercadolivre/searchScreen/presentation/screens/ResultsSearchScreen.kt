@@ -15,7 +15,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mrenann.mercadolivre.core.presentation.components.ErrorView
 import com.mrenann.mercadolivre.core.presentation.components.LoadingView
 import com.mrenann.mercadolivre.detailsScreen.presentation.screens.DetailsScreen
-import com.mrenann.mercadolivre.homeScreen.presentation.components.Header
+import com.mrenann.mercadolivre.core.presentation.components.Header
 import com.mrenann.mercadolivre.searchScreen.presentation.components.ItemCard
 import com.mrenann.mercadolivre.searchScreen.presentation.screenModel.SearchScreenModel
 
