@@ -6,7 +6,7 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write  # Permissão para comentar no PR
+  pull-requests: write
 
 jobs:
   coverage:
@@ -15,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup JDK 17
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: temurin
@@ -34,23 +34,29 @@ jobs:
           chmod +x gradlew
           ./gradlew koverXmlReport
 
-      - name: Extract coverage summary
+      - name: Extract and format coverage data
         run: |
-          # Extrai métricas do XML
-          LINE_COV=$(grep -oP 'line-rate="\K[0-9.]+' build/reports/kover/report.xml | head -1)
-          BRANCH_COV=$(grep -oP 'branch-rate="\K[0-9.]+' build/reports/kover/report.xml | head -1)
+          # Caminho atualizado para Kover 0.9.1
+          XML_PATH=build/kover/report.xml
           
-          # Calcula porcentagem
-          LINE_PCT=$(awk "BEGIN {printf \"%.2f\", $LINE_COV * 100}")
-          BRANCH_PCT=$(awk "BEGIN {printf \"%.2f\", $BRANCH_COV * 100}")
+          # Extrai métricas com tratamento de erro
+          LINE_RATE=$(grep 'lineRate=' $XML_PATH | sed -E 's/.*lineRate="([0-9.]+)".*/\1/' || echo "0")
+          BRANCH_RATE=$(grep 'branchRate=' $XML_PATH | sed -E 's/.*branchRate="([0-9.]+)".*/\1/' || echo "0")
 
-          # Gera relatório Markdown
-          echo "## 📊 Test Coverage Report
+          # Converte para porcentagem
+          LINE_COV=$(awk "BEGIN {printf \"%.2f\", ($LINE_RATE) * 100}")
+          BRANCH_COV=$(awk "BEGIN {printf \"%.2f\", ($BRANCH_RATE) * 100}")
+
+          # Gera relatório
+          echo "## 📈 Kover 0.9.1 Coverage Report
           
-          | Metric           | Coverage |
-          |------------------|----------|
-          | **Lines**        | $LINE_PCT% |
-          | **Branches**     | $BRANCH_PCT% |" > report.md
+          | Metric       | Coverage |
+          |--------------|----------|
+          | **Lines**    | $LINE_COV% |
+          | **Branches** | $BRANCH_COV% | 
+          
+          _Minimum required: 80% line coverage_ 
+          " > report.md
 
       - name: Comment on PR
         uses: mshick/add-pr-comment@v2
