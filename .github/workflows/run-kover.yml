@@ -51,4 +51,5 @@ jobs:
       - name: Comment PR with coverage
         uses: marocchino/sticky-pull-request-comment@v2
         with:
+          token: ${{ secrets.PR_COMMENT_TOKEN }}
           message: "📊 Cobertura de testes: **${{ steps.extract_coverage.outputs.coverage }}%**"
