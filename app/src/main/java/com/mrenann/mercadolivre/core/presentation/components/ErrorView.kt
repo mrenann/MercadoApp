@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,23 +40,27 @@ fun ErrorView(
 ) {
     Box(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .testTag("error_view_container"),
         contentAlignment = Alignment.Center
     ) {
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 24.dp)
+                .testTag("error_view_content"),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
 
             Icon(
-                modifier = Modifier.size(120.dp),
+                modifier = Modifier
+                    .size(120.dp)
+                    .testTag("error_icon"),
                 imageVector = EvaIcons.Outline.AlertTriangle,
                 tint = Color.Red,
-                contentDescription = "Back",
+                contentDescription = "Error Icon",
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -65,7 +70,8 @@ fun ErrorView(
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.DarkGray,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.testTag("error_title")
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -74,7 +80,8 @@ fun ErrorView(
                 text = message,
                 fontSize = 16.sp,
                 color = Color.Gray,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.testTag("error_message")
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -83,7 +90,8 @@ fun ErrorView(
                 onClick = onButtonClick,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
+                    .height(50.dp)
+                    .testTag("error_retry_button"),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = primaryButtonColor,
@@ -93,10 +101,10 @@ fun ErrorView(
                 Text(
                     text = buttonText,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.testTag("error_button_text")
                 )
             }
-
         }
     }
 }

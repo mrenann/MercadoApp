@@ -7,7 +7,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.mrenann.mercadolivre.homeScreen.presentation.components.Header
+import com.mrenann.mercadolivre.core.presentation.components.Header
 import com.mrenann.mercadolivre.homeScreen.presentation.components.HomeContent
 import com.mrenann.mercadolivre.homeScreen.presentation.components.HomeLoading
 import com.mrenann.mercadolivre.homeScreen.presentation.screenModel.HomeScreenModel

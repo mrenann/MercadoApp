@@ -1,4 +1,4 @@
-package com.mrenann.mercadolivre.homeScreen.presentation.components
+package com.mrenann.mercadolivre.core.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

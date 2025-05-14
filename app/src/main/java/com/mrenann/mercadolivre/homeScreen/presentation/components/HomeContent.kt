@@ -8,6 +8,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -16,11 +17,14 @@ fun HomeContent() {
         modifier = Modifier
             .fillMaxSize()
             .background(Color(color = 0xFFF0F0F0))
+            .testTag("home_content_container")
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag("home_content_column")
         ) {
-            BannerSection()
+            BannerSection(modifier = Modifier.testTag("banner_section"))
         }
     }
 }

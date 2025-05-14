@@ -27,7 +27,7 @@ import com.mrenann.mercadolivre.ui.theme.YellowAccent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BannerSection() {
+fun BannerSection(modifier: Modifier = Modifier) {
     val initialPage = 0
     val pagerState = rememberPagerState(
         initialPage = initialPage,
@@ -35,7 +35,7 @@ fun BannerSection() {
     )
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(180.dp)
             .background(
