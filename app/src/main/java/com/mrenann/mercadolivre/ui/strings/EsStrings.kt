@@ -31,9 +31,6 @@ internal val EsStrings = Strings(
         withoutTitle = "Sin título",
         productCondition = { condition -> "$condition  | +10mil vendidos" }
     ),
-    homeStrings = HomeStrings(
-        cca = ""
-    ),
     searchStrings = SearchStrings(
         withoutTitle = "Sin título",
         currencyDefault = "ARS",

@@ -31,9 +31,6 @@ internal val PtStrings = Strings(
         withoutTitle = "Sem Título",
         productCondition = { condition -> "$condition  | +10mil vendidos" }
     ),
-    homeStrings = HomeStrings(
-        cca = ""
-    ),
     searchStrings = SearchStrings(
         withoutTitle = "Sem Título",
         currencyDefault = "BRL",

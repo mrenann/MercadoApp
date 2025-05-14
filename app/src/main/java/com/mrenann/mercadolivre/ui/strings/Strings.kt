@@ -3,12 +3,7 @@ package com.mrenann.mercadolivre.ui.strings
 data class Strings(
     val coreStrings: CoreStrings,
     val detailsStrings: DetailsStrings,
-    val homeStrings: HomeStrings,
     val searchStrings: SearchStrings
-)
-
-data class HomeStrings(
-    val cca: String
 )
 
 data class CoreStrings(

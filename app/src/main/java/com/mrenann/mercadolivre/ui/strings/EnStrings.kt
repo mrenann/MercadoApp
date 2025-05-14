@@ -31,9 +31,6 @@ internal val EnStrings = Strings(
         withoutTitle = "Untitled",
         productCondition = { condition -> "$condition  | +10k sold" }
     ),
-    homeStrings = HomeStrings(
-        cca = ""
-    ),
     searchStrings = SearchStrings(
         withoutTitle = "Untitled",
         currencyDefault = "BRL",
