@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -28,40 +28,40 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run tests with Kover
-        run: ./gradlew test koverXmlReport
+        run: ./gradlew koverXmlReport
 
-      - name: Store Main report
+      - name: Store XML report
         uses: actions/upload-artifact@v4
         with:
-          name: main-coverage
-          path: build/reports/kover/report.xml
+          name: kover-xml-report
+          path: build/reports/kover/xml/report.xml
 
-      - name: Generate coverage report
+      - name: Extract coverage percentage
         id: kover-report
         run: |
-          REPORT_PATH=$(find build/reports/kover -name "report.xml" | head -n 1)
+          REPORT_PATH="build/reports/kover/xml/report.xml"
           
-          if [ -z "$REPORT_PATH" ]; then
-          echo "❌ Coverage report not found!"
-          exit 1
+          if [ ! -f "$REPORT_PATH" ]; then
+            echo "❌ Coverage report not found at $REPORT_PATH"
+            exit 1
           fi
           
           echo "✅ Found report at: $REPORT_PATH"
-          cat "$REPORT_PATH"  # 👈 Adicione isso pra ver o conteúdo do XML
           
-          TOTAL_COVERAGE=$(grep -o 'line-rate="0\.[0-9]*"' "$REPORT_PATH" | grep -o '0\.[0-9]*')
+          # Extrai o line-rate usando sed
+          TOTAL_COVERAGE=$(sed -n 's/.*<coverage[^>]*line-rate="\([^"]*\)".*/\1/p' "$REPORT_PATH")
           
-          echo "DEBUG - TOTAL_COVERAGE: $TOTAL_COVERAGE"  # 👈 Mostre o valor
+          echo "DEBUG - TOTAL_COVERAGE: $TOTAL_COVERAGE"
           
           if [ -z "$TOTAL_COVERAGE" ]; then
-          echo "❌ Couldn't extract coverage from XML!"
-          exit 1
+            echo "❌ Couldn't extract coverage from XML!"
+            exit 1
           fi
           
-          COVERAGE_PERCENTAGE=$(echo "$TOTAL_COVERAGE * 100" | bc)
+          # Calcula a porcentagem e formata com 2 casas decimais
+          COVERAGE_PERCENTAGE=$(echo "scale=2; $TOTAL_COVERAGE * 100" | bc -l)
           echo "📊 Coverage: ${COVERAGE_PERCENTAGE}%"
           echo "coverage=$COVERAGE_PERCENTAGE" >> $GITHUB_OUTPUT
-
 
       - name: Comment coverage on PR
         if: github.event_name == 'pull_request'
@@ -84,19 +84,20 @@ jobs:
               - Verifique que exceções e casos de erro são testados
             </details>
 
-      - name: Upload coverage report
+      - name: Upload full report
         uses: actions/upload-artifact@v4
         with:
-          name: kover-report
+          name: kover-full-report
           path: build/reports/kover/
 
       - name: Check coverage threshold
         run: |
+          MIN_COVERAGE=70
           COVERAGE=${{ steps.kover-report.outputs.coverage }}
-          if (( $(echo "$COVERAGE < 70" | bc -l) )); then
-            echo "⚠️ Cobertura abaixo do limite recomendado de 70%"
-            echo "Cobertura atual: $COVERAGE%"
+          
+          if (( $(echo "$COVERAGE < $MIN_COVERAGE" | bc -l) )); then
+            echo "::error::⚠️ Cobertura abaixo do limite de ${MIN_COVERAGE}% (Atual: ${COVERAGE}%)"
+            exit 1
           else
-            echo "✅ Cobertura acima do limite recomendado de 70%"
-            echo "Cobertura atual: $COVERAGE%"
+            echo "✅ Cobertura acima do limite de ${MIN_COVERAGE}%"
           fi
