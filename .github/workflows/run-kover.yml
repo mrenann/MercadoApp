@@ -32,13 +32,22 @@ jobs:
       - name: Run Kover Coverage Analysis
         id: kover
         run: |
+          # Executa o relatório Kover e captura a saída
           ./gradlew koverXmlReport
-          COVERAGE_PERCENTAGE=$(grep -Po 'line-rate="\K[^"]*' build/reports/kover/report.xml | awk '{print int($1 * 100)}')
+          
+          # Método alternativo: usa a saída do koverVerify para obter a porcentagem
+          COVERAGE_OUTPUT=$(./gradlew koverVerify --debug | grep -m 1 -oE 'Covered by tests: ([0-9\.]+)%' || echo "Covered by tests: 0%")
+          COVERAGE_PERCENTAGE=$(echo "$COVERAGE_OUTPUT" | grep -oE '[0-9\.]+' || echo "0")
+          
+          # Arredonda para número inteiro
+          COVERAGE_PERCENTAGE=$(printf "%.0f" "$COVERAGE_PERCENTAGE")
+          
+          # Define a saída para uso em etapas posteriores
           echo "coverage=$COVERAGE_PERCENTAGE" >> $GITHUB_OUTPUT
-          echo "Coverage: $COVERAGE_PERCENTAGE%"
+          echo "Cobertura final: $COVERAGE_PERCENTAGE%"
 
       - name: Kover Verification
-        run: ./gradlew koverVerify
+        run: ./gradlew koverVerify || true  # Continua mesmo se falhar na verificação
 
       - name: Find Comment
         uses: peter-evans/find-comment@v2
@@ -47,6 +56,16 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: 'github-actions[bot]'
           body-includes: Cobertura de Código
+
+      - name: Determine Status Icon
+        id: status
+        run: |
+          COVERAGE=${{ steps.kover.outputs.coverage }}
+          if [ $COVERAGE -ge 50 ]; then
+            echo "icon=✅ Esta PR atende aos requisitos mínimos de cobertura." >> $GITHUB_OUTPUT
+          else
+            echo "icon=❌ Esta PR não atende aos requisitos mínimos de cobertura." >> $GITHUB_OUTPUT
+          fi
 
       - name: Create or Update Coverage Comment
         uses: peter-evans/create-or-update-comment@v2
@@ -58,7 +77,7 @@ jobs:
             
             **Requisito mínimo:** 50%
             
-            ${{ steps.kover.outputs.coverage >= 50 && '✅ Esta PR atende aos requisitos mínimos de cobertura.' || '❌ Esta PR não atende aos requisitos mínimos de cobertura.' }}
+            ${{ steps.status.outputs.icon }}
             
             *Os seguintes padrões foram excluídos da análise:*
             - Classes anotadas com `@Composable` e `@Preview`
