@@ -2,7 +2,7 @@ name: Android Kover Test Coverage
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 permissions:
   pull-requests: write
