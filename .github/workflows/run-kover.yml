@@ -2,9 +2,11 @@ name: Android Kover Test Coverage
 
 on:
   pull_request:
-    branches: [ main, master, develop ]
-  push:
-    branches: [ main, master, develop ]
+    branches: [ main ]
+
+permissions:
+  pull-requests: write
+  contents: read
 
 jobs:
   test-coverage:
@@ -26,12 +28,18 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run tests with Kover
-        run: ./gradlew koverXmlReport
+        run: ./gradlew test koverXmlReport
+
+      - name: Store Main report
+        uses: actions/upload-artifact@v4
+        with:
+          name: main-coverage
+          path: build/reports/kover/report.xml
 
       - name: Generate coverage report
         id: kover-report
         run: |
-          REPORT_PATH=$(find app/build/reports/kover -name "report.xml" | head -n 1)
+          REPORT_PATH=$(find build/reports/kover -name "report.xml" | head -n 1)
           
           if [ -z "$REPORT_PATH" ]; then
             echo "❌ Coverage report not found!"
@@ -71,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: kover-report
-          path: app/build/reports/kover/
+          path: build/reports/kover/
 
       - name: Check coverage threshold
         run: |
