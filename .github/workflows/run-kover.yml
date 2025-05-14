@@ -22,6 +22,9 @@ jobs:
       - name: Grant execute permission to Gradle
         run: chmod +x ./gradlew
 
+      - name: Install xmllint
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+
       - name: Run tests with coverage
         run: ./gradlew koverXmlReport
 
