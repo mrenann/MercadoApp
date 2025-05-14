@@ -9,8 +9,6 @@ kotlinxCoroutinesTest = "1.10.2"
 lifecycleRuntimeKtx = "2.9.0"
 activityCompose = "1.10.1"
 composeBom = "2025.05.00"
-mockitoCore = "5.17.0"
-mockitoInline = "5.2.0"
 mockk = "1.14.2"
 turbine = "1.2.0"
 voyager = "1.1.0-beta03"
@@ -24,6 +22,8 @@ coreTesting = "2.2.0"
 testCore = "1.6.1"
 kover = "0.9.1"
 zoomable = "2.7.0"
+lyricist = "1.7.0"
+ksp = "2.1.20-2.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,14 +42,13 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 
 #Voyager
-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
-mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
-mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockitoInline" }
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
 voyager-screenModel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
+
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 #ICONS
 composeIcons-evaIcons = { module = "br.com.devsrsouza.compose.icons:eva-icons", version.ref = "composeIcons" }
@@ -67,6 +66,10 @@ zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
 androidx-core = { module = "androidx.test:core", version.ref = "testCore" }
 
+#LYRICIST
+lyricist = { module = "cafe.adriel.lyricist:lyricist", version.ref = "lyricist" }
+lyricist-processor = { module = "cafe.adriel.lyricist:lyricist-processor", version.ref = "lyricist" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -74,4 +77,8 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
+
+[bundles]
+voyager = ["voyager-navigator", "voyager-screenModel", "voyager-koin"]

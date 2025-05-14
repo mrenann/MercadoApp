@@ -11,9 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import cafe.adriel.lyricist.strings
 import com.mrenann.mercadolivre.core.domain.model.ProductDetails
 import com.mrenann.mercadolivre.detailsScreen.domain.utils.Constants.Fifty
-import com.mrenann.mercadolivre.detailsScreen.domain.utils.Constants.One
 
 @Composable
 fun DetailsContent(product: ProductDetails) {
@@ -28,13 +28,16 @@ fun DetailsContent(product: ProductDetails) {
             .padding(all = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(space = 16.dp)
     ) {
-        Text(text = "Quantidade: ${One}")
+        Text(text = strings.detailsStrings.quantityOne)
         val availableQuantityText =
             if (product.quantity < Fifty) {
-                "${product.quantity}"
+                product.quantity.toString()
             } else {
-                "+50"
+                strings.detailsStrings.moreFifty
             }
-        Text(text = "($availableQuantityText Disponíveis)", color = Color.Gray)
+        Text(
+            text = strings.detailsStrings.availableQuantity(availableQuantityText),
+            color = Color.Gray
+        )
     }
 }

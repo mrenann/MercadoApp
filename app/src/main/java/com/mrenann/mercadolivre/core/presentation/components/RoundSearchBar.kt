@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.lyricist.strings
 import compose.icons.EvaIcons
 import compose.icons.evaicons.Outline
 import compose.icons.evaicons.outline.Search
@@ -27,7 +28,7 @@ fun RoundSearchBar(
     query: String? = null,
     onClick: () -> Unit
 ) {
-    val displayText = query?.takeIf { it.isNotBlank() } ?: "Buscar no Mercado Livre"
+    val displayText = query?.takeIf { it.isNotBlank() } ?: strings.coreStrings.searchOnMercadoLivre
     val displayColor = if (query.isNullOrBlank()) Color.Gray else Color.Black
 
     Row(
@@ -45,7 +46,7 @@ fun RoundSearchBar(
                 .testTag("search_icon"),
             imageVector = EvaIcons.Outline.Search,
             tint = Color.Gray,
-            contentDescription = "Search Icon",
+            contentDescription = strings.coreStrings.searchIconDescription,
         )
         Text(
             text = displayText,

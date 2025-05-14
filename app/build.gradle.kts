@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.kotlinx.kover)
+    alias(libs.plugins.ksp)
 }
 
 allprojects {
@@ -115,6 +116,12 @@ kover {
 
 }
 
+ksp {
+    arg("lyricist.internalVisibility", "true")
+    arg("lyricist.generateStringsProperty", "true")
+}
+
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -126,9 +133,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    implementation(libs.voyager.navigator)
-    implementation(libs.voyager.koin)
-    implementation(libs.voyager.screenModel)
+    implementation(libs.bundles.voyager)
+    implementation(libs.lyricist)
+    ksp(libs.lyricist.processor)
     implementation(libs.composeIcons.evaIcons)
     implementation(libs.code.gson)
     implementation(platform(libs.koin.bom))

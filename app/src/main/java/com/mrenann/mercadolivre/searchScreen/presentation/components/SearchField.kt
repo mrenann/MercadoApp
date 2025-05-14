@@ -24,6 +24,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import cafe.adriel.lyricist.strings
 import compose.icons.EvaIcons
 import compose.icons.evaicons.Outline
 import compose.icons.evaicons.outline.ChevronLeft
@@ -37,6 +38,8 @@ fun RowScope.SearchField(
     onQueryChanged: (String) -> Unit,
     onBack: () -> Unit,
 ) {
+    val strings = strings.searchStrings
+
     var textFieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(
             TextFieldValue(
@@ -53,7 +56,7 @@ fun RowScope.SearchField(
             textFieldValue = it
             onQueryChanged(it.text)
         },
-        placeholder = { Text("Buscar no Mercado Livre") },
+        placeholder = { Text(strings.searchOnMercadoLivre) },
         modifier = Modifier
             .weight(1f)
             .focusRequester(focusRequester)
@@ -85,7 +88,7 @@ fun RowScope.SearchField(
         ),
         leadingIcon = {
             IconButton(onClick = { onBack() }) {
-                Icon(EvaIcons.Outline.ChevronLeft, contentDescription = "Voltar")
+                Icon(EvaIcons.Outline.ChevronLeft, contentDescription = strings.backIconDescription)
             }
         },
         trailingIcon = {
@@ -96,7 +99,7 @@ fun RowScope.SearchField(
                         selection = TextRange(0)
                     )
                 }) {
-                    Icon(EvaIcons.Outline.Close, contentDescription = "Limpar texto")
+                    Icon(EvaIcons.Outline.Close, contentDescription = strings.clearIconDescription)
                 }
             }
         }

@@ -39,7 +39,6 @@ class ErrorViewTest {
             .assertIsDisplayed()
         composeTestRule.onNodeWithTag("error_title")
             .assertIsDisplayed()
-            .assertTextEquals("Um erro ocorreu!")
         composeTestRule.onNodeWithTag("error_message")
             .assertIsDisplayed()
             .assertTextEquals(testMessage)

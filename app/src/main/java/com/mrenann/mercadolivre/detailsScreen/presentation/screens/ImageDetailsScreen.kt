@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import cafe.adriel.lyricist.strings
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -77,7 +78,7 @@ data class ImageDetailsScreen(val images: List<String>, val initialPage: Int = 0
                             .data(images[index])
                             .crossfade(true)
                             .build(),
-                        contentDescription = "produto imagem",
+                        contentDescription = strings.detailsStrings.productImage,
                         modifier = Modifier
                             .fillMaxSize()
                             .zoomable(zoomState = zoomStates[index]),
@@ -105,7 +106,10 @@ data class ImageDetailsScreen(val images: List<String>, val initialPage: Int = 0
 
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
-                        text = "${currentPage + 1}/${images.size}",
+                        text = strings.detailsStrings.currentPageAndImagesSize(
+                            currentPage + 1,
+                            images.size
+                        ),
                         color = Color.White
                     )
                 }

@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.lyricist.strings
 import com.mrenann.mercadolivre.ui.theme.YellowAccent
 import compose.icons.EvaIcons
 import compose.icons.evaicons.Outline
@@ -28,7 +29,7 @@ fun Header(
     onSearchClick: () -> Unit,
     onBackClick: (() -> Unit)? = null
 ) {
-
+    val strings = strings.coreStrings
     Column(
         modifier =
             Modifier
@@ -46,7 +47,7 @@ fun Header(
                 IconButton(onClick = { onBackClick() }) {
                     Icon(
                         imageVector = EvaIcons.Outline.ChevronLeft,
-                        contentDescription = "Back",
+                        contentDescription = strings.backIconDescription,
                     )
                 }
             }
@@ -55,10 +56,10 @@ fun Header(
                 modifier = Modifier.weight(1F),
                 onClick = { onSearchClick() }
             )
-            IconButton(onClick = { /* NONE */ }) {
+            IconButton(onClick = {}) {
                 Icon(
                     imageVector = EvaIcons.Outline.ShoppingCart,
-                    contentDescription = "Back",
+                    contentDescription = strings.cartIconDescription,
                 )
             }
         }
@@ -73,12 +74,12 @@ fun Header(
             Icon(
                 modifier = Modifier.size(16.dp),
                 imageVector = EvaIcons.Outline.Pin,
-                contentDescription = "Back",
+                contentDescription = strings.pinIconDescription,
             )
-            Text("Desafio Mobile")
+            Text(strings.mobileChallenge)
             Icon(
                 imageVector = EvaIcons.Outline.ChevronRight,
-                contentDescription = "Back",
+                contentDescription = strings.nextIconDescription,
             )
         }
     }

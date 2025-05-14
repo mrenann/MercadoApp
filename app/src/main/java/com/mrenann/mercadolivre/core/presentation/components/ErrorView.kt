@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.lyricist.strings
 import com.mrenann.mercadolivre.ui.theme.ErrorButton
 import compose.icons.EvaIcons
 import compose.icons.evaicons.Outline
@@ -60,13 +61,13 @@ fun ErrorView(
                     .testTag("error_icon"),
                 imageVector = EvaIcons.Outline.AlertTriangle,
                 tint = Color.Red,
-                contentDescription = "Error Icon",
+                contentDescription = strings.coreStrings.errorIconDescription,
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Um erro ocorreu!",
+                text = strings.coreStrings.anErrorOccurred,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.DarkGray,

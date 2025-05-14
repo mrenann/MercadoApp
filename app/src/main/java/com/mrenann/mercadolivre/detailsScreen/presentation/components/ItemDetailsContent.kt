@@ -8,9 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.lyricist.strings
 import com.mrenann.mercadolivre.core.domain.model.DetailedProduct
 import com.mrenann.mercadolivre.core.domain.model.SearchResult
-import com.mrenann.mercadolivre.detailsScreen.domain.utils.Constants.Ten
 import com.mrenann.mercadolivre.detailsScreen.utils.toCondition
 
 @Composable
@@ -19,6 +19,7 @@ fun ItemDetailsContent(
     onImageClick: (List<String>, Int) -> Unit,
     fallback: SearchResult,
 ) {
+    val strings = strings.detailsStrings
     Column {
         val product = item.item
         val pictures = product?.pictures
@@ -28,7 +29,7 @@ fun ItemDetailsContent(
             ?: if (product == null) fallback.originalPrice else null
         val currentPrice = product?.price
             ?: fallback.price ?: 0.0
-        val currency = product?.currencyId ?: fallback.currencyId ?: "BRL"
+        val currency = product?.currencyId ?: fallback.currencyId ?: strings.currencyDefault
 
         Column(
             modifier = Modifier
@@ -36,12 +37,14 @@ fun ItemDetailsContent(
         ) {
             product?.condition?.let {
                 Text(
-                    text = "${product.condition.toCondition()} | +${Ten}mil vendidos",
+                    text = strings.productCondition(
+                        it.toCondition()
+                    ),
                     color = Color.Gray,
                     fontSize = 12.sp
                 )
             }
-            Text(product?.title ?: fallback.title ?: "Sem título")
+            Text(product?.title ?: fallback.title ?: strings.withoutTitle)
         }
 
         ImagesPager(
@@ -62,7 +65,7 @@ fun ItemDetailsContent(
         }
 
         DescriptionContent(
-            description = item.description ?: "Sem descrição disponível"
+            description = item.description ?: strings.withoutDescription
         )
     }
 
