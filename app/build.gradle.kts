@@ -75,7 +75,6 @@ ktlint {
 
 
 kover {
-
     reports {
         total {
             xml {
