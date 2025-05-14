@@ -42,13 +42,22 @@ jobs:
           REPORT_PATH=$(find build/reports/kover -name "report.xml" | head -n 1)
           
           if [ -z "$REPORT_PATH" ]; then
-            echo "❌ Coverage report not found!"
-            exit 1
+          echo "❌ Coverage report not found!"
+          exit 1
           fi
           
           echo "✅ Found report at: $REPORT_PATH"
+          cat "$REPORT_PATH"  # 👈 Adicione isso pra ver o conteúdo do XML
           
           TOTAL_COVERAGE=$(grep -o 'line-rate="0\.[0-9]*"' "$REPORT_PATH" | grep -o '0\.[0-9]*')
+          
+          echo "DEBUG - TOTAL_COVERAGE: $TOTAL_COVERAGE"  # 👈 Mostre o valor
+          
+          if [ -z "$TOTAL_COVERAGE" ]; then
+          echo "❌ Couldn't extract coverage from XML!"
+          exit 1
+          fi
+          
           COVERAGE_PERCENTAGE=$(echo "$TOTAL_COVERAGE * 100" | bc)
           echo "📊 Coverage: ${COVERAGE_PERCENTAGE}%"
           echo "coverage=$COVERAGE_PERCENTAGE" >> $GITHUB_OUTPUT
