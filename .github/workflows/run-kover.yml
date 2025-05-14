@@ -31,10 +31,20 @@ jobs:
       - name: Generate coverage report
         id: kover-report
         run: |
-          TOTAL_COVERAGE=$(grep -o 'line-rate="0\.[0-9]*"' app/build/reports/kover/report.xml | grep -o '0\.[0-9]*')
+          REPORT_PATH=$(find app/build/reports/kover -name "report.xml" | head -n 1)
+          
+          if [ -z "$REPORT_PATH" ]; then
+            echo "❌ Coverage report not found!"
+            exit 1
+          fi
+          
+          echo "✅ Found report at: $REPORT_PATH"
+          
+          TOTAL_COVERAGE=$(grep -o 'line-rate="0\.[0-9]*"' "$REPORT_PATH" | grep -o '0\.[0-9]*')
           COVERAGE_PERCENTAGE=$(echo "$TOTAL_COVERAGE * 100" | bc)
-          echo "Coverage: ${COVERAGE_PERCENTAGE}%"
+          echo "📊 Coverage: ${COVERAGE_PERCENTAGE}%"
           echo "coverage=$COVERAGE_PERCENTAGE" >> $GITHUB_OUTPUT
+
 
       - name: Comment coverage on PR
         if: github.event_name == 'pull_request'

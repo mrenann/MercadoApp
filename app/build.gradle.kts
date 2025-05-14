@@ -73,8 +73,16 @@ ktlint {
     }
 }
 
+
 kover {
+
     reports {
+        total {
+            xml {
+                onCheck = true
+            }
+        }
+
         verify {
             rule {
                 minBound(50)
