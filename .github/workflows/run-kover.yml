@@ -5,7 +5,6 @@ on:
     branches:
       - master
 
-# Adiciona permissões necessárias para comentar em PRs
 permissions:
   contents: read
   pull-requests: write
@@ -29,58 +28,105 @@ jobs:
       - name: Make Gradle executable
         run: chmod +x ./gradlew
 
-      - name: Run Kover Coverage Analysis
-        id: kover
+      - name: Debug Kover Tasks
         run: |
-          # Executa o relatório Kover e captura a saída
-          ./gradlew koverXmlReport
-          
-          # Método alternativo: usa a saída do koverVerify para obter a porcentagem
-          COVERAGE_OUTPUT=$(./gradlew koverVerify --debug | grep -m 1 -oE 'Covered by tests: ([0-9\.]+)%' || echo "Covered by tests: 0%")
-          COVERAGE_PERCENTAGE=$(echo "$COVERAGE_OUTPUT" | grep -oE '[0-9\.]+' || echo "0")
-          
-          # Arredonda para número inteiro
-          COVERAGE_PERCENTAGE=$(printf "%.0f" "$COVERAGE_PERCENTAGE")
-          
-          # Define a saída para uso em etapas posteriores
-          echo "coverage=$COVERAGE_PERCENTAGE" >> $GITHUB_OUTPUT
-          echo "Cobertura final: $COVERAGE_PERCENTAGE%"
+          # Lista as tasks disponíveis relacionadas ao Kover
+          ./gradlew tasks | grep -i kover || echo "Nenhuma task Kover encontrada"
 
-      - name: Kover Verification
-        run: ./gradlew koverVerify || true  # Continua mesmo se falhar na verificação
-
-      - name: Find Comment
-        uses: peter-evans/find-comment@v2
-        id: find-comment
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: Cobertura de Código
-
-      - name: Determine Status Icon
-        id: status
+      - name: Generate Kover HTML Report
         run: |
-          COVERAGE=${{ steps.kover.outputs.coverage }}
-          if [ $COVERAGE -ge 50 ]; then
-            echo "icon=✅ Esta PR atende aos requisitos mínimos de cobertura." >> $GITHUB_OUTPUT
+          # O formato HTML é geralmente mais fácil de analisar para extrair a cobertura
+          ./gradlew koverHtmlReport || true
+
+      - name: Extract Coverage from Reports
+        id: extract_coverage
+        run: |
+          echo "Localizando relatórios Kover:"
+          find . -name "*kover*" -type d || echo "Nenhum diretório Kover encontrado"
+          
+          # Verifica se o diretório HTML existe
+          HTML_DIR=$(find . -path "*/kover/html*" -type d | head -1)
+          echo "Diretório HTML: $HTML_DIR"
+          
+          # Tenta extrair cobertura do index.html se existir
+          if [ -n "$HTML_DIR" ] && [ -f "$HTML_DIR/index.html" ]; then
+            COVERAGE=$(grep -o "Total.*[0-9]\+%" "$HTML_DIR/index.html" | grep -o "[0-9]\+%" | head -1 | sed 's/%//g' || echo "0")
+            echo "Cobertura extraída do HTML: $COVERAGE%"
           else
-            echo "icon=❌ Esta PR não atende aos requisitos mínimos de cobertura." >> $GITHUB_OUTPUT
+            COVERAGE="0"
+            echo "Arquivo HTML não encontrado"
           fi
+          
+          # Se não conseguiu do HTML, tenta do XML
+          if [ "$COVERAGE" == "0" ]; then
+            XML_FILE=$(find . -path "*/kover/*" -name "*.xml" | head -1)
+            if [ -n "$XML_FILE" ]; then
+              echo "Arquivo XML encontrado: $XML_FILE"
+              cat "$XML_FILE" | head -20  # Mostra primeiras linhas para análise
+              COVERAGE=$(grep -o 'line-rate="[0-9.]*"' "$XML_FILE" | head -1 | cut -d'"' -f2 | awk '{printf "%.0f", $1 * 100}' || echo "0")
+              echo "Cobertura extraída do XML: $COVERAGE%"
+            fi
+          fi
+          
+          # Método alternativo: executar koverVerify e capturar sua saída
+          if [ "$COVERAGE" == "0" ]; then
+            echo "Tentando extrair da saída do koverVerify..."
+            VERIFY_OUTPUT=$(./gradlew koverVerify --info 2>&1)
+            echo "$VERIFY_OUTPUT" > kover_output.txt
+            echo "Saída completa salva em kover_output.txt"
+          
+            # Tenta várias expressões regulares diferentes para diferentes formatos de saída
+            COVERAGE=$(echo "$VERIFY_OUTPUT" | grep -o -E "(Coverage|covered by tests)[^0-9]*[0-9]+(\.[0-9]+)?%" | grep -o -E "[0-9]+(\.[0-9]+)?%" | head -1 | sed 's/%//g' || echo "0")
+            echo "Cobertura extraída do koverVerify: $COVERAGE%"
+          fi
+          
+          # Se ainda não conseguiu, define um valor padrão mas marca como falha
+          if [ "$COVERAGE" == "0" ]; then
+            echo "Não foi possível extrair a cobertura. Definindo como 0%."
+            echo "::error::Falha ao extrair a porcentagem de cobertura de código"
+          fi
+          
+          # Salva a cobertura para uso nos próximos passos
+          echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
 
-      - name: Create or Update Coverage Comment
-        uses: peter-evans/create-or-update-comment@v2
-        with:
-          comment-id: ${{ steps.find-comment.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ## 📊 Cobertura de Código: ${{ steps.kover.outputs.coverage }}%
+      - name: Report Coverage in PR Comment
+        if: always()  # Sempre executa este passo, independente de falhas anteriores
+        run: |
+          COVERAGE="${{ steps.extract_coverage.outputs.coverage }}"
+          
+          if [ "$COVERAGE" -ge 50 ]; then
+            STATUS_ICON="✅ Esta PR atende aos requisitos mínimos de cobertura."
+          else
+            STATUS_ICON="❌ Esta PR não atende aos requisitos mínimos de cobertura."
+          fi
+          
+          # Cria o comentário
+          COMMENT="## 📊 Cobertura de Código: ${COVERAGE}%
             
             **Requisito mínimo:** 50%
-            
-            ${{ steps.status.outputs.icon }}
-            
+          
+            ${STATUS_ICON}
+          
             *Os seguintes padrões foram excluídos da análise:*
-            - Classes anotadas com `@Composable` e `@Preview`
-            - Pacotes de telas e componentes de UI
-            - Pacotes de temas e injeção de dependência
-          edit-mode: replace
+          - Classes anotadas com \`@Composable\` e \`@Preview\`
+          - Pacotes de telas e componentes de UI
+          - Pacotes de temas e injeção de dependência"
+          
+            # Usa o token do GitHub para adicionar o comentário
+            echo "$COMMENT" > coverage_comment.md
+          
+            # Usa GitHub CLI para comentar no PR
+            gh pr comment ${{ github.event.pull_request.number }} --body-file coverage_comment.md
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+            # Opcional: Upload dos relatórios como artefatos do workflow
+            - name: Upload Coverage Reports
+              if: always()
+              uses: actions/upload-artifact@v3
+              with:
+                name: kover-reports
+                path: |
+                  **/build/reports/kover/
+                  kover_output.txt
+                if-no-files-found: ignore
