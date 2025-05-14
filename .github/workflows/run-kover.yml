@@ -28,7 +28,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run tests with Kover
-        run: ./gradlew koverXmlReport
+        run: ./gradlew koverXmlReport --stacktrace
 
       - name: Store XML report
         uses: actions/upload-artifact@v4
@@ -39,10 +39,17 @@ jobs:
       - name: Extract coverage percentage
         id: kover-report
         run: |
-          REPORT_PATH="build/reports/kover/xml/report.xml"
+          # Verifica se o diretório existe
+          echo "Conteúdo do diretório build/reports/kover:"
+          ls -la build/reports/kover/
           
+          # Verifica subdiretórios
+          echo "Verificando subdiretórios:"
+          ls -R build/reports/kover/
+          
+          REPORT_PATH="build/reports/kover/report.xml" # Tentativa alternativa
           if [ ! -f "$REPORT_PATH" ]; then
-            echo "❌ Coverage report not found at $REPORT_PATH"
+            echo "❌ Tentativa alternativa falhou. Relatório não encontrado."
             exit 1
           fi
           
