@@ -95,7 +95,17 @@ kover {
                 )
             }
         }
+        total {
+            xml {
+                onCheck = true
+            }
+
+            html {
+                onCheck = true
+            }
+        }
     }
+
 }
 
 dependencies {
