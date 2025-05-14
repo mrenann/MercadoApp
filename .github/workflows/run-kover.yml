@@ -31,7 +31,7 @@ jobs:
       - name: Generate coverage report
         id: kover-report
         run: |
-          TOTAL_COVERAGE=$(grep -o 'line-rate="0\.[0-9]*"' app/build/reports/kover/xml/report.xml | grep -o '0\.[0-9]*')
+          TOTAL_COVERAGE=$(grep -o 'line-rate="0\.[0-9]*"' app/build/reports/kover/report.xml | grep -o '0\.[0-9]*')
           COVERAGE_PERCENTAGE=$(echo "$TOTAL_COVERAGE * 100" | bc)
           echo "Coverage: ${COVERAGE_PERCENTAGE}%"
           echo "coverage=$COVERAGE_PERCENTAGE" >> $GITHUB_OUTPUT
