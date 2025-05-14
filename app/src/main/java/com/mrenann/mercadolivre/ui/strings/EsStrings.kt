@@ -16,13 +16,26 @@ internal val EsStrings = Strings(
         errorIconDescription = "Erro"
     ),
     detailsStrings = DetailsStrings(
-        cca = ""
+        discount = { count -> " $count% OFF" },
+        description = "Descripción",
+        withoutDescription = "Sin descripción disponible",
+        currencyDefault = "ARS",
+        quantityOne = "Cantidad: 1",
+        availableQuantity = { quantity -> "($quantity Disponibles)" },
+        moreFifty = "+50",
+        image = "Imagen",
+        currentPageAndImagesSize = { currentPage, imagesSize -> "$currentPage / $imagesSize" },
+        productImage = "Imagen del producto",
+        backIconDescription = "Volver",
+        loadDataError = "Error al cargar los datos",
+        withoutTitle = "Sin título",
+        productCondition = { condition -> "$condition  | +10mil vendidos" }
     ),
     homeStrings = HomeStrings(
         cca = ""
     ),
     searchStrings = SearchStrings(
-        withouTitle = "Sin título",
+        withoutTitle = "Sin título",
         currencyDefault = "ARS",
         freeShipping = "Envío gratis",
         searchOnMercadoLivre = "Buscar en Mercado Libre",

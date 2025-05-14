@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import cafe.adriel.lyricist.strings
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -64,7 +65,7 @@ class DetailsScreen(val item: SearchResult) : Screen {
                         IconButton(onClick = { navigator.pop() }) {
                             Icon(
                                 imageVector = EvaIcons.Outline.ChevronLeft,
-                                contentDescription = "Voltar",
+                                contentDescription = strings.detailsStrings.backIconDescription,
                                 tint = Color.Black
                             )
                         }
@@ -104,7 +105,7 @@ class DetailsScreen(val item: SearchResult) : Screen {
                         }
 
                         is DetailsScreenModel.State.Error -> {
-                            Text("Erro ao carregar dados.")
+                            Text(strings.detailsStrings.loadDataError)
                         }
 
                         is DetailsScreenModel.State.Result -> {

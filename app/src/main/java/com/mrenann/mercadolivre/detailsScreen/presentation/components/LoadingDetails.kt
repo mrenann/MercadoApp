@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.lyricist.strings
 import com.mrenann.mercadolivre.core.domain.model.SearchResult
 
 
@@ -23,20 +24,20 @@ fun LoadingDetails(
             modifier = Modifier
                 .padding(all = 12.dp)
         ) {
-            Text("${item.title}")
+            Text(item.title.orEmpty())
             BoxShimmer(
                 fraction = .6F,
                 height = 16.dp
             )
         }
 
-        ImagesPager(1, listOf(item.thumbnail ?: ""), onImageClick)
+        ImagesPager(1, listOf(item.thumbnail.orEmpty()), onImageClick)
 
         PriceDisplay(
             modifier = Modifier.padding(horizontal = 12.dp),
             originalPrice = item.originalPrice,
             currentPrice = item.price ?: 0.0,
-            currency = item.currencyId ?: "BRL",
+            currency = item.currencyId ?: strings.detailsStrings.currencyDefault,
         )
 
         Column(

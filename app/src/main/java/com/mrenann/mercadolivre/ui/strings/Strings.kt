@@ -24,7 +24,7 @@ data class CoreStrings(
 )
 
 data class SearchStrings(
-    val withouTitle: String,
+    val withoutTitle: String,
     val currencyDefault: String,
     val freeShipping: String,
     val searchOnMercadoLivre: String,
@@ -35,5 +35,18 @@ data class SearchStrings(
 )
 
 data class DetailsStrings(
-    val cca: String
+    val withoutTitle: String,
+    val backIconDescription: String,
+    val description: String,
+    val withoutDescription: String,
+    val productCondition: (condition: String) -> String,
+    val currencyDefault: String,
+    val discount: (count: Int) -> String,
+    val quantityOne: String,
+    val moreFifty: String,
+    val image: String,
+    val productImage: String,
+    val currentPageAndImagesSize: (currentPage: Int, imagesSize: Int) -> String,
+    val availableQuantity: (quantity: String) -> String,
+    val loadDataError: String,
 )

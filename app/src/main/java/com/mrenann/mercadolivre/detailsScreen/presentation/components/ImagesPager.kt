@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import cafe.adriel.lyricist.strings
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -51,7 +52,7 @@ fun ImagesPager(
                     .data(pictures[index])
                     .crossfade(true)
                     .build(),
-                contentDescription = "Imagem",
+                contentDescription = strings.detailsStrings.image,
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
@@ -62,7 +63,10 @@ fun ImagesPager(
         }
 
         Text(
-            text = "${pagerState.currentPage + 1} / $imagesSize",
+            text = strings.detailsStrings.currentPageAndImagesSize(
+                pagerState.currentPage + 1,
+                imagesSize
+            ),
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(6.dp)

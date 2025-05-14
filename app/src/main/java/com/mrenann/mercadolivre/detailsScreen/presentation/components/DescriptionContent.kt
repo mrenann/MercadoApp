@@ -10,19 +10,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.lyricist.strings
 
 @Composable
 fun DescriptionContent(description: String) {
+    val strings = strings.detailsStrings
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(all = 12.dp),
         verticalArrangement = Arrangement.spacedBy(space = 4.dp)
     ) {
-        Text(text = "Descrição", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        Text(text = strings.description, fontSize = 20.sp, fontWeight = FontWeight.Bold)
         Text(
             text = description.takeIf { it.isNotBlank() }
-                ?: "Sem descrição disponível",
+                ?: strings.withoutDescription,
             fontSize = 14.sp
         )
     }

@@ -16,13 +16,26 @@ internal val PtStrings = Strings(
         errorIconDescription = "Erro"
     ),
     detailsStrings = DetailsStrings(
-        cca = ""
+        discount = { count -> " $count% OFF" },
+        description = "Descrição",
+        withoutDescription = "Sem descrição disponível",
+        currencyDefault = "BRL",
+        quantityOne = "Quantidade: 1",
+        availableQuantity = { quantity -> "($quantity Disponíveis)" },
+        moreFifty = "+50",
+        image = "Imagem",
+        currentPageAndImagesSize = { currentPage, imagesSize -> "$currentPage / $imagesSize" },
+        productImage = "Imagem do Produto",
+        backIconDescription = "Voltar",
+        loadDataError = "Erro ao carregar os dados",
+        withoutTitle = "Sem Título",
+        productCondition = { condition -> "$condition  | +10mil vendidos" }
     ),
     homeStrings = HomeStrings(
         cca = ""
     ),
     searchStrings = SearchStrings(
-        withouTitle = "Sem Título",
+        withoutTitle = "Sem Título",
         currencyDefault = "BRL",
         freeShipping = "Frete Grátis",
         searchOnMercadoLivre = "Buscar no Mercado Livre",

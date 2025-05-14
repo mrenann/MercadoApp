@@ -16,13 +16,26 @@ internal val EnStrings = Strings(
         mobileChallenge = "Mobile Challenge"
     ),
     detailsStrings = DetailsStrings(
-        cca = ""
+        discount = { count -> " $count% OFF" },
+        description = "Description",
+        withoutDescription = "No description available",
+        currencyDefault = "BRL",
+        quantityOne = "Quantity: 1",
+        availableQuantity = { quantity -> "($quantity Available)" },
+        moreFifty = "+50",
+        image = "Image",
+        currentPageAndImagesSize = { currentPage, imagesSize -> "$currentPage / $imagesSize" },
+        productImage = "Product Image",
+        backIconDescription = "Back",
+        loadDataError = "Error loading data",
+        withoutTitle = "Untitled",
+        productCondition = { condition -> "$condition  | +10k sold" }
     ),
     homeStrings = HomeStrings(
         cca = ""
     ),
     searchStrings = SearchStrings(
-        withouTitle = "Untitled",
+        withoutTitle = "Untitled",
         currencyDefault = "BRL",
         freeShipping = "Free Shipping",
         searchOnMercadoLivre = "Search on Mercado Livre",

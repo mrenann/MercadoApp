@@ -50,7 +50,7 @@ fun ItemCard(
             Row {
                 AsyncImage(
                     model = item.thumbnail,
-                    contentDescription = item.title ?: strings.withouTitle,
+                    contentDescription = item.title ?: strings.withoutTitle,
                     modifier =
                         Modifier
                             .size(150.dp)
@@ -67,7 +67,7 @@ fun ItemCard(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = item.title ?: strings.withouTitle,
+                        text = item.title ?: strings.withoutTitle,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 2,

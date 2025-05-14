@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.lyricist.strings
 import com.mrenann.mercadolivre.core.utils.formatBalance
 import com.mrenann.mercadolivre.detailsScreen.domain.utils.Constants.PerCent
 
@@ -85,7 +86,7 @@ fun PriceDisplay(
 
             discountPercentage?.let {
                 Text(
-                    text = "$discountPercentage% OFF",
+                    text = strings.detailsStrings.discount(discountPercentage),
                     color = Color(color = 0xFF4CAF50),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
