@@ -29,7 +29,6 @@ jobs:
 
       - name: Run tests with Kover
         run: |
-          # Run tests with Kover for all modules
           ./gradlew test koverXmlReport --stacktrace
 
       - name: Store XML report
@@ -41,54 +40,46 @@ jobs:
       - name: Extract coverage percentage
         id: kover-report
         run: |
-          # Procura relatórios em todos os módulos
           echo "Procurando relatórios em todos os módulos:"
           find . -name "report.xml" | grep -i kover
-          
-          # Lista os arquivos nos diretórios principais
+
           echo "Conteúdo dos diretórios de relatórios:"
           find . -path "*/build/reports/kover*" -type d | xargs ls -la 2>/dev/null || echo "Nenhum diretório encontrado"
-          
-          # Procura especificamente no módulo app
+
           if [ -d "app/build/reports/kover" ]; then
             echo "Encontrado diretório de relatório no módulo app:"
             ls -la app/build/reports/kover/
           fi
           
-          # Encontra todos os relatórios XML
+          
           REPORT_FILES=$(find . -name "report.xml" | grep -i kover)
           
           if [ -z "$REPORT_FILES" ]; then
             echo "❌ Nenhum arquivo report.xml encontrado"
             COVERAGE_PERCENTAGE="NA"
           else
-            # Inicializa contadores totais
             TOTAL_COVERED=0
             TOTAL_MISSED=0
           
             echo "Processando os seguintes relatórios:"
             echo "$REPORT_FILES"
-          
-            # Processa cada arquivo de relatório
+
             for REPORT_PATH in $REPORT_FILES; do
               echo "Analisando relatório: $REPORT_PATH"
               echo "Conteúdo do relatório:"
               cat "$REPORT_PATH"
-          
-              # Extrai dados de cobertura
+
               LINE_COVERED=$(grep -o 'type="LINE".*covered="[0-9]*"' "$REPORT_PATH" | grep -o 'covered="[0-9]*"' | grep -o '[0-9]*' | awk '{ sum += $1 } END { print sum }')
               LINE_MISSED=$(grep -o 'type="LINE".*missed="[0-9]*"' "$REPORT_PATH" | grep -o 'missed="[0-9]*"' | grep -o '[0-9]*' | awk '{ sum += $1 } END { print sum }')
           
               echo "Relatório $REPORT_PATH - linhas cobertas: $LINE_COVERED, linhas não cobertas: $LINE_MISSED"
-          
-              # Soma aos totais
+
               TOTAL_COVERED=$((TOTAL_COVERED + LINE_COVERED))
               TOTAL_MISSED=$((TOTAL_MISSED + LINE_MISSED))
             done
           
             echo "Total combinado - Linhas cobertas: $TOTAL_COVERED, Linhas não cobertas: $TOTAL_MISSED"
-          
-            # Calcula porcentagem de cobertura
+
             TOTAL_LINES=$((TOTAL_COVERED + TOTAL_MISSED))
           
             if [ "$TOTAL_LINES" -eq 0 ]; then
@@ -102,8 +93,7 @@ jobs:
           fi
           
           echo "coverage=$COVERAGE_PERCENTAGE" >> $GITHUB_OUTPUT
-          
-          # Cria relatório de debug detalhado
+
           {
             echo "## Relatório de Cobertura de Código"
             echo
