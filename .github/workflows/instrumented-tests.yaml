@@ -1,4 +1,4 @@
-name: Instrumented tests
+name: Instrumentation Tests
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  run-instrumented-tests:
+  run-instrumentation-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,11 +32,16 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run instrumented tests on emulator
-        uses: ReactiveCircus/android-emulator-runner@v2
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Build app
+        run: ./gradlew assembleDebug assembleAndroidTest
+
+      - name: Run instrumented tests
+        uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
-          target: google_apis
           arch: x86_64
-          profile: pixel
-          script: ./gradlew connectedAndroidTest
+          profile: Nexus 6
+          script: ./gradlew connectedDebugAndroidTest
