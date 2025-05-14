@@ -1,65 +1,21 @@
-name: Kover Coverage Report
+name: Test coverage
 
 on:
   pull_request:
-    branches: [ master ]
-
-permissions:
-  contents: read
-  pull-requests: write
 
 jobs:
-  coverage:
+
+  collect_coverage:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
+      - uses: actions/checkout@v2
+      - uses: stevenleadbeater/kotlin-kover-action@v1.0.0
+        id: kover-tests
         with:
-          distribution: temurin
-          java-version: 17
-
-      - name: Cache Gradle
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-
-      - name: Generate coverage report
-        run: |
-          chmod +x gradlew
-          ./gradlew koverXmlReport
-
-      - name: Extract and format coverage data
-        run: |
-          # Caminho atualizado para Kover 0.9.1
-          XML_PATH=build/kover/report.xml
-          
-          # Extrai métricas com tratamento de erro
-          LINE_RATE=$(grep 'lineRate=' $XML_PATH | sed -E 's/.*lineRate="([0-9.]+)".*/\1/' || echo "0")
-          BRANCH_RATE=$(grep 'branchRate=' $XML_PATH | sed -E 's/.*branchRate="([0-9.]+)".*/\1/' || echo "0")
-
-          # Converte para porcentagem
-          LINE_COV=$(awk "BEGIN {printf \"%.2f\", ($LINE_RATE) * 100}")
-          BRANCH_COV=$(awk "BEGIN {printf \"%.2f\", ($BRANCH_RATE) * 100}")
-
-          # Gera relatório
-          echo "## 📈 Kover 0.9.1 Coverage Report
-          
-          | Metric       | Coverage |
-          |--------------|----------|
-          | **Lines**    | $LINE_COV% |
-          | **Branches** | $BRANCH_COV% | 
-          
-          _Minimum required: 80% line coverage_ 
-          " > report.md
-
-      - name: Comment on PR
-        uses: mshick/add-pr-comment@v2
-        with:
-          message-path: report.md
+          coverage-threshold: 80
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          proxy-url: https://add-pr-comment-proxy-94idvmwyie-uc.a.run.app
+      - name: Check coverage
+        if: ${{(steps.kover-tests.outputs.line-coverage) < 80}}
+        shell: bash
+        run: exit "Line coverage expected to be > 80 but was ${{steps.kover-tests.outputs.line-coverage}}"
