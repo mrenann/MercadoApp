@@ -116,6 +116,7 @@ class DetailsScreen(val item: SearchResult, val query: String) : Screen {
 
                         is DetailsScreenModel.State.Result -> {
                             ItemDetailsContent(
+                                query = query,
                                 item = currentState.product,
                                 fallback = item,
                                 onImageClick = { images, initialPage ->
