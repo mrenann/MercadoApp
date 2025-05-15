@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -34,7 +35,7 @@ import compose.icons.EvaIcons
 import compose.icons.evaicons.Outline
 import compose.icons.evaicons.outline.ChevronLeft
 
-class DetailsScreen(val item: SearchResult) : Screen {
+class DetailsScreen(val item: SearchResult, val query: String) : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -60,7 +61,12 @@ class DetailsScreen(val item: SearchResult) : Screen {
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 TopAppBar(
-                    title = {},
+                    title = {
+                        Text(
+                            text = query,
+                            color = Color.Black
+                        )
+                    },
                     navigationIcon = {
                         IconButton(onClick = { navigator.pop() }) {
                             Icon(
@@ -84,7 +90,7 @@ class DetailsScreen(val item: SearchResult) : Screen {
                     scrollBehavior = scrollBehavior
                 )
             },
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.background
         ) { innerPadding ->
             LazyColumn(
                 modifier = Modifier

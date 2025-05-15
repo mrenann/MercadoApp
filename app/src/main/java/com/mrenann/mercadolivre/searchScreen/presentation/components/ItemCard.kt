@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -42,7 +44,7 @@ fun ItemCard(
                 .clickable { onItemClick() },
         shape = RoundedCornerShape(0.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.background,
         ),
         elevation = CardDefaults.cardElevation(4.dp),
     ) {
@@ -93,7 +95,7 @@ fun ItemCard(
                         ),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onBackground,
                     )
 
                     if (item.freeShipping == true) {
@@ -106,6 +108,12 @@ fun ItemCard(
                     }
                 }
             }
+            HorizontalDivider(
+                modifier = Modifier
+                    .height(1.dp)
+                    .padding(vertical = 4.dp),
+                color = Color(0x0DFFFFFF),
+            )
         }
     }
 }

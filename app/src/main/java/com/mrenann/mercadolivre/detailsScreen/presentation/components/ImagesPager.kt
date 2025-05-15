@@ -5,9 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
@@ -42,8 +42,10 @@ fun ImagesPager(
         HorizontalPager(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(fraction = 0.35F)
-                .background(Color.White),
+                .height(220.dp)
+                .background(
+                    MaterialTheme.colorScheme.background
+                ),
             state = pagerState,
             key = { index -> pictures[index] }
         ) { index ->
@@ -72,7 +74,8 @@ fun ImagesPager(
                 .padding(6.dp)
                 .background(Color.LightGray.copy(alpha = 0.7f), CircleShape)
                 .padding(horizontal = 4.dp),
-            style = MaterialTheme.typography.bodySmall
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.Black
         )
 
         if (imagesSize > 1) {

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.lyricist.strings
 import com.mrenann.mercadolivre.core.utils.formatBalance
 import com.mrenann.mercadolivre.detailsScreen.domain.utils.Constants.PerCent
+import java.util.Locale
 
 @Composable
 fun PriceDisplay(
@@ -28,15 +30,14 @@ fun PriceDisplay(
     val discountPercentage =
         if (originalPrice == null) null else ((originalPrice - currentPrice) / originalPrice * PerCent).toInt()
 
-    val formattedCurrentPrice = currentPrice.toString()
-
+    val formattedCurrentPrice = String.format(Locale.US, "%.2f", currentPrice)
     val (currentIntPart, currentDecimalPart) = formattedCurrentPrice.split(".")
 
     Column(
         modifier = modifier,
     ) {
         originalPrice?.let {
-            val formattedOriginalPrice = originalPrice.toString()
+            val formattedOriginalPrice = String.format(Locale.US, "%.2f", originalPrice)
             val (originalIntPart, originalDecimalPart) = formattedOriginalPrice.split(".")
 
             Row {
@@ -71,13 +72,13 @@ fun PriceDisplay(
                         currency = currency,
                         withDecimals = false
                     ),
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = currentDecimalPart.padStart(2, '0'),
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 2.dp)

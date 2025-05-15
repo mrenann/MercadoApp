@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cafe.adriel.lyricist.strings
 import com.mrenann.mercadolivre.ui.theme.YellowAccent
@@ -48,6 +49,7 @@ fun Header(
                     Icon(
                         imageVector = EvaIcons.Outline.ChevronLeft,
                         contentDescription = strings.backIconDescription,
+                        tint = Color.Black
                     )
                 }
             }
@@ -60,6 +62,7 @@ fun Header(
                 Icon(
                     imageVector = EvaIcons.Outline.ShoppingCart,
                     contentDescription = strings.cartIconDescription,
+                    tint = Color.Black
                 )
             }
         }
@@ -75,10 +78,12 @@ fun Header(
                 modifier = Modifier.size(16.dp),
                 imageVector = EvaIcons.Outline.Pin,
                 contentDescription = strings.pinIconDescription,
+                tint = Color.Black
             )
-            Text(strings.mobileChallenge)
+            Text(text = strings.mobileChallenge, color = Color.Black)
             Icon(
                 imageVector = EvaIcons.Outline.ChevronRight,
+                tint = Color.Black,
                 contentDescription = strings.nextIconDescription,
             )
         }

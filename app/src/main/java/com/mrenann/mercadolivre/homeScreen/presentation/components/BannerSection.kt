@@ -15,12 +15,12 @@ import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mrenann.mercadolivre.ui.theme.YellowAccent
@@ -42,7 +42,7 @@ fun BannerSection(modifier: Modifier = Modifier) {
                 brush = Brush.verticalGradient(
                     colors = listOf(
                         YellowAccent,
-                        Color(color = 0xFFF0F0F0)
+                        MaterialTheme.colorScheme.background
                     ),
                     endY = 250f
                 )
@@ -65,10 +65,14 @@ fun BannerSection(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 8.dp)
-                    .background((Color.White), RoundedCornerShape(4.dp))
+                    .background(
+                        (MaterialTheme.colorScheme.surfaceContainer),
+                        RoundedCornerShape(4.dp)
+                    )
             ) {
                 Text(
-                    "$page"
+                    text = "$page",
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
         }

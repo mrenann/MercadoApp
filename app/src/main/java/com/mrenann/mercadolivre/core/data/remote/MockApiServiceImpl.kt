@@ -9,6 +9,7 @@ import com.mrenann.mercadolivre.core.data.remote.response.ItemDescriptionRespons
 import com.mrenann.mercadolivre.core.data.remote.response.ItemDetailsResponse
 import com.mrenann.mercadolivre.core.data.remote.response.SearchQueryResponse
 import com.mrenann.mercadolivre.core.utils.JsonUtils
+import com.mrenann.mercadolivre.core.utils.purify
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
@@ -21,8 +22,8 @@ class MockApiServiceImpl(
     override fun searchProducts(query: String): Flow<SearchQueryResponse> =
         flow {
             try {
-                validateSearch(query)
-                val queryFormatted = query.trim().lowercase()
+                val queryFormatted = query.purify()
+                validateSearch(queryFormatted)
                 val fileName = "search-MLA-$queryFormatted.json"
                 Log.d("MockApiService", "Buscando arquivo: $fileName")
 
@@ -110,13 +111,11 @@ class MockApiServiceImpl(
     private fun validateSearch(query: String) {
         val availableTerms = listOf("arroz", "cafe", "camisa", "iphone", "zapatillas")
 
-        val normalizedQuery = query.trim().lowercase()
-
-        if (normalizedQuery.isBlank()) {
-            require(normalizedQuery.isNotBlank()) { "Termo de busca não pode ser vazio" }
+        if (query.isBlank()) {
+            require(query.isNotBlank()) { "Termo de busca não pode ser vazio" }
         }
 
-        if (normalizedQuery !in availableTerms) {
+        if (query !in availableTerms) {
             Log.w("MockApiService", "Termo de busca não disponível: $query")
             throw NoSuchElementException("Não encontramos resultados para: $query")
         }

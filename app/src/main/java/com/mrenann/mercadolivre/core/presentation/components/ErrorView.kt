@@ -70,7 +70,7 @@ fun ErrorView(
                 text = strings.coreStrings.anErrorOccurred,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.DarkGray,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.testTag("error_title")
             )
@@ -96,7 +96,7 @@ fun ErrorView(
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = primaryButtonColor,
-                    contentColor = Color.White
+                    contentColor = Color.Black
                 )
             ) {
                 Text(

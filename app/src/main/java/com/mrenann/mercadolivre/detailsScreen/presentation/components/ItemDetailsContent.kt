@@ -54,7 +54,7 @@ fun ItemDetailsContent(
         )
 
         PriceDisplay(
-            modifier = Modifier.padding(horizontal = 12.dp),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
             originalPrice = originalPrice,
             currentPrice = currentPrice,
             currency = currency,
