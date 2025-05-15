@@ -112,7 +112,7 @@ fun ItemCard(
                 modifier = Modifier
                     .height(1.dp)
                     .padding(vertical = 4.dp),
-                color = Color(0x0DFFFFFF),
+                color = Color(color = 0x0DFFFFFF),
             )
         }
     }
