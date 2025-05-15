@@ -39,6 +39,7 @@ internal val PtStrings = Strings(
         clearIconDescription = "Limpar busca",
         backIconDescription = "Voltar",
         backToHome = "Voltar para o Inicio",
-        recentSearches = "Ultimas Buscas"
+        recentSearches = "Dados mockados: arroz, cafe, iphone, camisa, zapatillas",
+        withoutRecentSearches = "Sem Buscas Recentes",
     )
 )

@@ -26,7 +26,8 @@ data class SearchStrings(
     val clearIconDescription: String,
     val backIconDescription: String,
     val backToHome: String,
-    val recentSearches: String
+    val recentSearches: String,
+    val withoutRecentSearches: String,
 )
 
 data class DetailsStrings(
