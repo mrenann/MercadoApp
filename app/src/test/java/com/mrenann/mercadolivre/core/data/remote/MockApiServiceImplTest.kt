@@ -113,7 +113,7 @@ class MockApiServiceImplTest {
     @Test(expected = NoSuchElementException::class)
     fun `should throw NoSuchElementException when searchProducts is called with unavailable query`() =
         runTest {
-            val query = "produtoInexistente"
+            val query = "produtoinexistente"
             try {
                 service.searchProducts(query).toList()
             } catch (e: NoSuchElementException) {
@@ -127,7 +127,7 @@ class MockApiServiceImplTest {
     @Test
     fun `should throw NoSuchElementException with correct message when searchProducts has unavailable query`() =
         runTest {
-            val query = "produtoInexistente"
+            val query = "produtoinexistente"
             try {
                 service.searchProducts(query).first()
                 fail("NoSuchElementException esperada mas não lançada.")
