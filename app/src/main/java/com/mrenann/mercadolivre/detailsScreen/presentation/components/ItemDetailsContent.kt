@@ -16,6 +16,7 @@ import com.mrenann.mercadolivre.detailsScreen.utils.toCondition
 @Composable
 fun ItemDetailsContent(
     item: DetailedProduct,
+    query: String = "",
     onImageClick: (List<String>, Int) -> Unit,
     fallback: SearchResult,
 ) {
@@ -30,6 +31,11 @@ fun ItemDetailsContent(
         val currentPrice = product?.price
             ?: fallback.price ?: 0.0
         val currency = product?.currencyId ?: fallback.currencyId ?: strings.currencyDefault
+
+        CategoryContent(
+            category = item.category,
+            query = query
+        )
 
         Column(
             modifier = Modifier
