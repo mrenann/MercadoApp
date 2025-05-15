@@ -10,4 +10,8 @@ data class SearchResult(
     val freeShipping: Boolean? = false,
     val currencyId: String? = null,
     val id: String? = null
-) : Serializable
+) : Serializable {
+    companion object {
+        private const val serialVersionUID: Long = 1L
+    }
+}

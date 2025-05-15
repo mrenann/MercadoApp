@@ -39,6 +39,7 @@ internal val EsStrings = Strings(
         clearIconDescription = "Limpiar búsqueda",
         backIconDescription = "Volver",
         backToHome = "Volver a Inicio",
-        recentSearches = "Últimas búsquedas"
+        recentSearches = "Datos mockados: arroz, cafe, iphone, camisa, zapatillas",
+        withoutRecentSearches = "Sin búsquedas recientes",
     )
 )

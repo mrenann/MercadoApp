@@ -145,6 +145,9 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.zoomable)
+    implementation(libs.bundles.room)
+    ksp(libs.androidx.room.compiler)
+
     // TESTS
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

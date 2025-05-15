@@ -39,6 +39,7 @@ internal val EnStrings = Strings(
         clearIconDescription = "Clear Search",
         backIconDescription = "Back",
         backToHome = "Back to Home",
-        recentSearches = "Recent Searches"
+        recentSearches = "Mock data: arroz, cafe, iphone, camisa, zapatillas",
+        withoutRecentSearches = "No recent searches",
     )
 )

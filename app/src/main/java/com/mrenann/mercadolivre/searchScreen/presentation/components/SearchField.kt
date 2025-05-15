@@ -3,12 +3,12 @@ package com.mrenann.mercadolivre.searchScreen.presentation.components
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,7 +49,7 @@ fun RowScope.SearchField(
     }
     var isFocused by rememberSaveable { mutableStateOf(false) }
 
-    TextField(
+    OutlinedTextField(
         value = textFieldValue,
         onValueChange = {
             textFieldValue = it
@@ -76,15 +75,11 @@ fun RowScope.SearchField(
             imeAction = ImeAction.Search,
         ),
         maxLines = 1,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            disabledContainerColor = Color.White,
-            cursorColor = Color.Black,
-            selectionColors = TextSelectionColors(
-                handleColor = Color.Blue,
-                backgroundColor = Color.LightGray.copy(alpha = 0.4f)
-            )
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.surfaceContainer,
+            focusedBorderColor = MaterialTheme.colorScheme.surfaceContainer,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
         leadingIcon = {
             IconButton(onClick = { onBack() }) {
@@ -104,6 +99,7 @@ fun RowScope.SearchField(
             }
         }
     )
+
 
     LaunchedEffect(isFocused) {
         if (isFocused) {
