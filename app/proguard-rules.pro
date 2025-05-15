@@ -19,3 +19,32 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+-keepattributes Signature
+-keepattributes RuntimeVisibleAnnotations
+
+
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+-dontwarn okhttp3.**
+-dontwarn okio.**
+
+# --- Firebase (Auth e Firestore) ---
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.firebase.**
+
+# --- Koin (com Compose e Android) ---
+-keep class org.koin.** { *; }
+-dontwarn org.koin.**
+
+# --- Voyager Navigation ---
+-keep class cafe.adriel.voyager.** { *; }
+-dontwarn cafe.adriel.voyager.**
+
+# --- Proteger MainActivity e Application (se você tiver) ---
+-keep class **.MainActivity { *; }
+-keep class **.MainApplication { *; }
