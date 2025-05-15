@@ -12,7 +12,7 @@ object JsonUtils {
         return try {
             context.assets.open(fileName).bufferedReader().use { it.readText() }
         } catch (ioException: IOException) {
-            Log.e("JsonUtils", "Error reading JSON file: ${ioException.message}")
+            Log.e("JsonUtils", "Erro lendo o arquivo JSON: ${ioException.message}")
             null
         }
     }
