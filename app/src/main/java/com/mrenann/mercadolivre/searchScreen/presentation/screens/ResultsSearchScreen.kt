@@ -30,8 +30,10 @@ data class ResultsSearchScreen(
         val screenModel = koinScreenModel<SearchScreenModel>()
         val state by screenModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
-        LaunchedEffect(Unit) {
-            screenModel.searchProducts(query)
+        LaunchedEffect(query) {
+            if ((screenModel.state.value as? SearchScreenModel.State.Result)?.state?.query != query) {
+                screenModel.searchProducts(query)
+            }
         }
 
         Column(
@@ -62,9 +64,12 @@ data class ResultsSearchScreen(
                 SearchScreenModel.State.Loading -> LoadingView()
                 is SearchScreenModel.State.Result -> {
                     LazyColumn(
-                        modifier = Modifier.weight(1F)
+                        modifier = Modifier.weight(1F),
                     ) {
-                        items((state as SearchScreenModel.State.Result).state.items) { item ->
+                        items(
+                            items = (state as SearchScreenModel.State.Result).state.items,
+                            key = { it.id ?: it.title.orEmpty() }
+                        ) { item ->
                             ItemCard(
                                 modifier = Modifier,
                                 item = item,

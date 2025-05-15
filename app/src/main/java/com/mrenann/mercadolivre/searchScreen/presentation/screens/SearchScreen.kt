@@ -90,7 +90,10 @@ data class SearchScreen(
                 is RecentsSearchesScreenModel.State.Result -> {
                     val items = (state as RecentsSearchesScreenModel.State.Result).items
                     LazyColumn {
-                        items(items) { query ->
+                        items(
+                            items = items,
+                            key = { it }
+                        ) { query ->
                             RecentQueryCard(string = query, onClick = {
                                 currentQuery.value = query
                                 navigator.replace(
