@@ -1,8 +1,10 @@
 package com.mrenann.mercadolivre.searchScreen.presentation.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,7 +34,11 @@ data class ResultsSearchScreen(
             screenModel.searchProducts(query)
         }
 
-        Column {
+        Column(
+            modifier = Modifier.background(
+                MaterialTheme.colorScheme.background
+            )
+        ) {
             Header(
                 query = query,
                 onBackClick = { navigator.pop() },
@@ -65,7 +71,8 @@ data class ResultsSearchScreen(
                                 onItemClick = {
                                     navigator.push(
                                         DetailsScreen(
-                                            item = item
+                                            item = item,
+                                            query = query
                                         )
 
                                     )

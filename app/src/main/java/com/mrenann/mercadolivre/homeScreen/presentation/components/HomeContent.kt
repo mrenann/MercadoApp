@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +17,7 @@ fun HomeContent() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(color = 0xFFF0F0F0))
+            .background(MaterialTheme.colorScheme.background)
             .testTag("home_content_container")
     ) {
         Column(

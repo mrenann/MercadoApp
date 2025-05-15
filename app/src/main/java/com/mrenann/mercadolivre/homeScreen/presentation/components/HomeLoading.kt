@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,7 +29,9 @@ fun HomeLoading() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(color =0xFFF0F0F0))
+            .background(
+                color = MaterialTheme.colorScheme.background
+            )
     ) {
         LazyColumn {
             item {
@@ -38,7 +41,7 @@ fun HomeLoading() {
                         verticalArrangement = Arrangement.Center,
                         modifier = Modifier
                             .fillMaxSize()
-                            .background((Color.White), RoundedCornerShape(4.dp))
+                            .background((MaterialTheme.colorScheme.surfaceContainer), RoundedCornerShape(4.dp))
                     ) {
                         Box(
                             modifier = Modifier
