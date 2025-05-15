@@ -6,9 +6,9 @@ import com.mrenann.mercadolivre.searchScreen.domain.repository.QueriesLocalRepos
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class RecentsSearchersScreenModel(
+class RecentsSearchesScreenModel(
     private val repository: QueriesLocalRepository
-) : StateScreenModel<RecentsSearchersScreenModel.State>(State.Loading) {
+) : StateScreenModel<RecentsSearchesScreenModel.State>(State.Loading) {
     sealed class State {
         object Loading : State()
         data class Result(val items: List<String>) : State()

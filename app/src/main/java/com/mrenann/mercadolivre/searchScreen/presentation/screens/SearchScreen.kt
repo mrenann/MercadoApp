@@ -29,7 +29,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mrenann.mercadolivre.searchScreen.presentation.components.RecentQueryCard
 import com.mrenann.mercadolivre.searchScreen.presentation.components.SearchField
-import com.mrenann.mercadolivre.searchScreen.presentation.screenModel.RecentsSearchersScreenModel
+import com.mrenann.mercadolivre.searchScreen.presentation.screenModel.RecentsSearchesScreenModel
 
 data class SearchScreen(
     val initialQuery: String = ""
@@ -40,7 +40,7 @@ data class SearchScreen(
         val navigator = LocalNavigator.currentOrThrow
         val lifecycleOwner = LocalLifecycleOwner.current
         val currentQuery = rememberSaveable { mutableStateOf(initialQuery) }
-        val screenModel = koinScreenModel<RecentsSearchersScreenModel>()
+        val screenModel = koinScreenModel<RecentsSearchesScreenModel>()
         val state by screenModel.state.collectAsState()
         LaunchedEffect(lifecycleOwner) {
             focusRequester.requestFocus()
@@ -80,15 +80,15 @@ data class SearchScreen(
             )
 
             when (state) {
-                is RecentsSearchersScreenModel.State.Loading -> {}
-                is RecentsSearchersScreenModel.State.Error ->
+                is RecentsSearchesScreenModel.State.Loading -> {}
+                is RecentsSearchesScreenModel.State.Error ->
                     Text(
                         text = strings.searchStrings.withoutRecentSearches,
                         modifier = Modifier.padding(horizontal = 12.dp)
                     )
 
-                is RecentsSearchersScreenModel.State.Result -> {
-                    val items = (state as RecentsSearchersScreenModel.State.Result).items
+                is RecentsSearchesScreenModel.State.Result -> {
+                    val items = (state as RecentsSearchesScreenModel.State.Result).items
                     LazyColumn {
                         items(items) { query ->
                             RecentQueryCard(string = query, onClick = {

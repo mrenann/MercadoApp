@@ -10,7 +10,7 @@ import com.mrenann.mercadolivre.searchScreen.domain.repository.QueriesLocalRepos
 import com.mrenann.mercadolivre.searchScreen.domain.repository.SearchRepository
 import com.mrenann.mercadolivre.searchScreen.domain.source.QueriesLocalDataSource
 import com.mrenann.mercadolivre.searchScreen.domain.source.SearchDataSource
-import com.mrenann.mercadolivre.searchScreen.presentation.screenModel.RecentsSearchersScreenModel
+import com.mrenann.mercadolivre.searchScreen.presentation.screenModel.RecentsSearchesScreenModel
 import com.mrenann.mercadolivre.searchScreen.presentation.screenModel.SearchScreenModel
 import org.koin.dsl.module
 
@@ -44,8 +44,8 @@ val searchModule =
             )
         }
 
-        factory<RecentsSearchersScreenModel> {
-            RecentsSearchersScreenModel(
+        factory<RecentsSearchesScreenModel> {
+            RecentsSearchesScreenModel(
                 repository = get<QueriesLocalRepository>(),
             )
         }
