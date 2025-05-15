@@ -15,6 +15,15 @@ During development, I attempted to integrate with the MercadoLibre API (develope
 }  
 ```
 
+## Screenshots
+
+
+
+| Home | Search | Results from search | Product Details | Image Zoom |
+|--------|--------|--------|--------|--------|
+| ![image](https://github.com/user-attachments/assets/12dd387b-1b4c-494a-9dac-0fcc4aa4825c) | ![image](https://github.com/user-attachments/assets/6904a0fb-2c1b-4eed-8fc3-1349e3e514aa) | ![image](https://github.com/user-attachments/assets/d569a7ad-0a02-48d9-af68-293faa512370) | ![image](https://github.com/user-attachments/assets/69d4550a-d291-4192-baae-67fb274f7a76) | ![image](https://github.com/user-attachments/assets/dcf7e28a-1731-4d98-a2c6-f58efe51a95b) |
+
+
 ## Features
 - **Search Products**: Enter a search term to find relevant items.
 - **Product List**: Display search results with thumbnails, titles, and prices.
